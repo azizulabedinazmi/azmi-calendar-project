@@ -162,8 +162,11 @@ export default function EventPreview({
       localStorage.setItem("bookmarked-events", JSON.stringify(updatedBookmarks));
       setBookmarks(updatedBookmarks);
       setIsBookmarked(false);
-      toast("Removed from bookmarks", {
-        description: "Event has been removed from your bookmarks",
+      toast(language === "zh" ? "已取消收藏" : "Removed from bookmarks", {
+        description:
+          language === "zh"
+            ? "事件已从收藏夹中移除"
+            : "Event has been removed from your bookmarks",
       });
     } else {
       const bookmarkData = {
@@ -179,19 +182,22 @@ export default function EventPreview({
       localStorage.setItem("bookmarked-events", JSON.stringify(updatedBookmarks));
       setBookmarks(updatedBookmarks);
       setIsBookmarked(true);
-      toast("Removed from bookmarks", {
-        description: "Event has been removed from your bookmarks",
+      toast(language === "zh" ? "已收藏" : "Bookmarked", {
+        description:
+          language === "zh"
+            ? "事件已添加到收藏夹"
+            : "Event has been added to your bookmarks",
       });
     }
   };
 
-  // Modified share function: Automatically use the username retrieved from Clerk
+  // 修改后的分享函数：使用 Clerk 自动获取的用户名
   const handleShare = async () => {
     if (!event) return;
     if (!user) {
-      // Sharing is not allowed if the user is not logged in
-      toast("Please sign in", {
-        description: "Share function available to signed-in users only",
+      // 未登录则不允许分享
+      toast(language === "zh" ? "请先登录" : "Please sign in", {
+        description: language === "zh" ? "分享功能仅对登录用户开放" : "Share function available to signed-in users only",
         variant: "destructive",
       });
       return;
@@ -199,13 +205,13 @@ export default function EventPreview({
     try {
       setIsSharing(true);
 
-      // Generate a unique shareId.
+      // 生成唯一 shareId
       const shareId = Date.now().toString() + Math.random().toString(36).substring(2, 9);
 
-      // Use the username retrieved from Clerk.
+      // 使用 Clerk 获取的用户名
       const clerkUsername = user.username || user.firstName || "Anonymous";
 
-      // Construct shared event data, directly using clerkUsername as the sharer's name.
+      // 构造共享事件数据，直接用 clerkUsername 作为共享者名称
       const sharedEvent = {
         ...event,
         sharedBy: clerkUsername,
@@ -229,11 +235,11 @@ export default function EventPreview({
       const result = await response.json();
 
       if (result.success) {
-        // Generate share link.
+        // 生成分享链接
         const shareLink = `${window.location.origin}/share/${shareId}`;
         setShareLink(shareLink);
 
-        // Generate QR code.
+        // 生成二维码
         try {
           const qrURL = await QRCode.toDataURL(shareLink, {
             width: 300,
@@ -248,7 +254,7 @@ export default function EventPreview({
           console.error("Error generating QR code:", qrError);
         }
 
-        // Store share records in localStorage for easier management.
+        // 存储分享记录到 localStorage 方便后续管理
         const storedShares = JSON.parse(localStorage.getItem("shared-events") || "[]");
         storedShares.push({
           id: shareId,

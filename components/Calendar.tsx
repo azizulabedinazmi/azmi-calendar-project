@@ -69,7 +69,7 @@ export default function Calendar() {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sidebarDate, setSidebarDate] = useState<Date>(new Date())
 
-    // Added: Initial time for quick event creation
+  // 新增：快速创建事件的初始时间
   const [quickCreateStartTime, setQuickCreateStartTime] = useState<Date | null>(null)
 
   // Add the new state variables for default view and keyboard shortcuts
