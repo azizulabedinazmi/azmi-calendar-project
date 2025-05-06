@@ -1,95 +1,95 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Input } from "@/components/ui/input"
-import { Bookmark, Search, Trash2 } from "lucide-react"
-import { format } from "date-fns"
-import { zhCN, enUS } from "date-fns/locale"
-import { toast } from "sonner"
-import { cn } from "@/lib/utils"
-import { useLanguage } from "@/hooks/useLanguage"
-import { translations } from "@/lib/i18n"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { enUS, zhCN } from "date-fns/locale";
+import { Bookmark, Search, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface BookmarkPanelProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onEventClick: (event: any) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onEventClick: (event: any) => void;
 }
 
 interface BookmarkedEvent {
-  id: string
-  title: string
-  startDate: string | Date
-  endDate: string | Date
-  color: string
-  location?: string
-  bookmarkedAt: string
+  id: string;
+  title: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  color: string;
+  location?: string;
+  bookmarkedAt: string;
 }
 
 export default function BookmarkPanel({ open, onOpenChange, onEventClick }: BookmarkPanelProps) {
-  const [language] = useLanguage()
-  const t = translations[language]
-  const [bookmarks, setBookmarks] = useState<BookmarkedEvent[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
+  const [language] = useLanguage();
+  const t = translations[language];
+  const [bookmarks, setBookmarks] = useState<BookmarkedEvent[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Load bookmarks from localStorage
   useEffect(() => {
     if (open) {
-      const storedBookmarks = localStorage.getItem("bookmarked-events")
+      const storedBookmarks = localStorage.getItem("bookmarked-events");
       if (storedBookmarks) {
         try {
-          const parsedBookmarks = JSON.parse(storedBookmarks)
+          const parsedBookmarks = JSON.parse(storedBookmarks);
           // Sort by bookmarked date (newest first)
           parsedBookmarks.sort(
             (a: BookmarkedEvent, b: BookmarkedEvent) =>
-              new Date(b.bookmarkedAt).getTime() - new Date(a.bookmarkedAt).getTime(),
-          )
-          setBookmarks(parsedBookmarks)
+              new Date(b.bookmarkedAt).getTime() - new Date(a.bookmarkedAt).getTime()
+          );
+          setBookmarks(parsedBookmarks);
         } catch (error) {
-          console.error("Error parsing bookmarks:", error)
-          setBookmarks([])
+          console.error("Error parsing bookmarks:", error);
+          setBookmarks([]);
         }
       }
     }
-  }, [open])
+  }, [open]);
 
   // Format date for display
   const formatEventDate = (dateString: string | Date) => {
-    const date = new Date(dateString)
-    return format(date, "yyyy-MM-dd HH:mm", { locale: language === "zh" ? zhCN : enUS })
-  }
+    const date = new Date(dateString);
+    return format(date, "yyyy-MM-dd HH:mm", { locale: language === "zh" ? zhCN : enUS });
+  };
 
   // Remove bookmark
   const removeBookmark = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    const updatedBookmarks = bookmarks.filter((bookmark) => bookmark.id !== id)
-    localStorage.setItem("bookmarked-events", JSON.stringify(updatedBookmarks))
-    setBookmarks(updatedBookmarks)
-    toast(language === "zh" ? "已移除收藏" : "Bookmark Removed", {
-      description: language === "zh" ? "事件已从收藏夹中移除" : "Event has been removed from your bookmarks",
-    })
-  }
+    e.stopPropagation();
+    const updatedBookmarks = bookmarks.filter((bookmark) => bookmark.id !== id);
+    localStorage.setItem("bookmarked-events", JSON.stringify(updatedBookmarks));
+    setBookmarks(updatedBookmarks);
+    toast("Bookmark Removed", {
+      description: "Event has been removed from your bookmarks",
+    });
+  };
 
   // Handle event click
   const handleEventClick = (event: BookmarkedEvent) => {
     // Close the bookmark panel
-    onOpenChange(false)
+    onOpenChange(false);
 
-    // Find the full event in the calendar events
-    onEventClick(event)
-  }
+    // Trigger the event click handler
+    onEventClick(event);
+  };
 
   // Filter bookmarks based on search term
   const filteredBookmarks = bookmarks.filter(
     (bookmark) =>
       bookmark.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (bookmark.location && bookmark.location.toLowerCase().includes(searchTerm.toLowerCase())),
-  )
+      (bookmark.location && bookmark.location.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -97,7 +97,7 @@ export default function BookmarkPanel({ open, onOpenChange, onEventClick }: Book
         <SheetHeader className="p-4 border-b">
           <SheetTitle className="flex items-center">
             <Bookmark className="mr-2 h-5 w-5" />
-            {language === "zh" ? "收藏夹" : "Bookmarks"}
+            Bookmarks
           </SheetTitle>
         </SheetHeader>
 
@@ -106,7 +106,7 @@ export default function BookmarkPanel({ open, onOpenChange, onEventClick }: Book
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder={language === "zh" ? "搜索收藏..." : "Search bookmarks..."}
+              placeholder="Search bookmarks..."
               className="pl-8"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -118,9 +118,9 @@ export default function BookmarkPanel({ open, onOpenChange, onEventClick }: Book
               <div className="flex flex-col items-center justify-center h-32 text-center text-muted-foreground">
                 <Bookmark className="h-10 w-10 mb-2 opacity-20" />
                 {searchTerm ? (
-                  <p>{language === "zh" ? "没有找到匹配的收藏" : "No matching bookmarks found"}</p>
+                  <p>No matching bookmarks found</p>
                 ) : (
-                  <p>{language === "zh" ? "您还没有收藏任何事件" : "You haven't bookmarked any events yet"}</p>
+                  <p>You haven't bookmarked any events yet</p>
                 )}
               </div>
             ) : (
@@ -155,6 +155,5 @@ export default function BookmarkPanel({ open, onOpenChange, onEventClick }: Book
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
-

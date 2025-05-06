@@ -1,31 +1,30 @@
 "use client"
 
-import { useState, useEffect, useRef, Suspense } from "react"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { ChevronLeft, ChevronRight, Search, PanelLeft } from 'lucide-react'
-import { addDays, subDays } from "date-fns"
-import Sidebar from "@/components/sidebar/Sidebar"
-import DayView from "@/components/view/DayView"
-import WeekView from "@/components/view/WeekView"
-import MonthView from "@/components/view/MonthView"
-import EventDialog from "@/components/event/EventDialog"
-import Settings from "@/components/home/Settings"
-import { translations, useLanguage } from "@/lib/i18n"
-import { checkPendingNotifications, clearAllNotificationTimers, type NOTIFICATION_SOUNDS } from "@/lib/notifications"
-import EventPreview from "@/components/event/EventPreview"
-import { useLocalStorage } from "@/hooks/useLocalStorage"
-import { useCalendar } from "@/components/context/CalendarContext"
-import EventUrlHandler from "@/components/event/EventUrlHandler"
-import RightSidebar from "@/components/sidebar/RightSidebar"
 import AnalyticsView from "@/components/analytics/AnalyticsView"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import UserProfileButton from "@/components/home/UserProfileButton"
-import { cn } from "@/lib/utils"
-import Weather from "@/components/home/Weather"
+import { useCalendar } from "@/components/context/CalendarContext"
+import EventDialog from "@/components/event/EventDialog"
+import EventPreview from "@/components/event/EventPreview"
+import EventUrlHandler from "@/components/event/EventUrlHandler"
 import DailyToast from "@/components/home/DailyToast"
 import QuickStartGuide from "@/components/home/QuickStartGuide"
+import Settings from "@/components/home/Settings"
+import UserProfileButton from "@/components/home/UserProfileButton"
+import Weather from "@/components/home/Weather"
+import RightSidebar from "@/components/sidebar/RightSidebar"
+import Sidebar from "@/components/sidebar/Sidebar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import DayView from "@/components/view/DayView"
+import MonthView from "@/components/view/MonthView"
+import WeekView from "@/components/view/WeekView"
+import { useLocalStorage } from "@/hooks/useLocalStorage"
+import { translations, useLanguage } from "@/lib/i18n"
+import { checkPendingNotifications, clearAllNotificationTimers } from "@/lib/notifications"
+import { addDays, subDays } from "date-fns"
+import { ChevronLeft, ChevronRight, PanelLeft, Search } from 'lucide-react'
+import { Suspense, useEffect, useRef, useState } from "react"
 
 type ViewType = "day" | "week" | "month" | "analytics"
 
@@ -70,7 +69,7 @@ export default function Calendar() {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sidebarDate, setSidebarDate] = useState<Date>(new Date())
 
-  // 新增：快速创建事件的初始时间
+    // Added: Initial time for quick event creation
   const [quickCreateStartTime, setQuickCreateStartTime] = useState<Date | null>(null)
 
   // Add the new state variables for default view and keyboard shortcuts
