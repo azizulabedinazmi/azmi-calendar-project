@@ -1,14 +1,14 @@
-import type React from "react"
-import type { Metadata } from "next"
-import "./globals.css"
-import { Toaster } from "@/components/ui/sonner"
 import { CalendarProvider } from "@/components/context/CalendarContext"
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { ClerkProvider } from '@clerk/nextjs'
-import { enUS } from '@clerk/localizations'
-import { GeistSans } from "geist/font/sans"
 import { ThemeProvider } from "@/components/context/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { enUS } from '@clerk/localizations'
+import { ClerkProvider } from '@clerk/nextjs'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { GeistSans } from "geist/font/sans"
+import type { Metadata } from "next"
+import type React from "react"
+import "./globals.css"
 
 export const metadata: Metadata = {
   title: "One Calendar",
@@ -59,7 +59,7 @@ export default function RootLayout({
       >
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
         >
