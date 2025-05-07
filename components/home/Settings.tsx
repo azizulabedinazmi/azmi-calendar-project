@@ -135,6 +135,7 @@ export default function Settings({
                 <SelectContent>
                   <SelectItem value="0">{t.sunday}</SelectItem>
                   <SelectItem value="1">{t.monday}</SelectItem>
+                  <SelectItem value="2">{t.friday}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

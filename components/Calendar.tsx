@@ -78,11 +78,8 @@ export default function Calendar() {
 
   // Add a useEffect to set the initial view based on the default view setting
   useEffect(() => {
-    // Only set the view on initial load
-    if (view !== defaultView) {
-      setView(defaultView as ViewType)
-    }
-  }, [])
+    setView(defaultView as ViewType)
+  }, [defaultView])
 
   // Add the keyboard shortcut handler
   useEffect(() => {
