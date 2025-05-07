@@ -1,14 +1,14 @@
 "use client"
 
-import { SettingsIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Switch } from "@/components/ui/switch"
 import { translations, type Language } from "@/lib/i18n"
 import type { NOTIFICATION_SOUNDS } from "@/utils/notifications"
-import { Switch } from "@/components/ui/switch"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { SettingsIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 
 interface SettingsProps {
@@ -98,14 +98,14 @@ export default function Settings({
           <div className="space-y-6 py-4">
             <div className="space-y-2">
               <Label htmlFor="theme">{language === "zh" ? "主题" : "Theme"}</Label>
-              <Select>
+              <Select value={theme} onValueChange={setTheme}>
                 <SelectTrigger>
                   <SelectValue placeholder="Theme" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="light" onClick={() => setTheme("light")}>{language === "zh" ? "亮色" : "Light"}</SelectItem>
-                  <SelectItem value="dark" onClick={() => setTheme("dark")}>{language === "zh" ? "暗色" : "Dark"}</SelectItem>
-                  <SelectItem value="system" onClick={() => setTheme("system")}>{language === "zh" ? "系统" : "System"}</SelectItem>
+                  <SelectItem value="light">{language === "zh" ? "亮色" : "Light"}</SelectItem>
+                  <SelectItem value="dark">{language === "zh" ? "暗色" : "Dark"}</SelectItem>
+                  <SelectItem value="system">{language === "zh" ? "系统" : "System"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -187,26 +187,26 @@ export default function Settings({
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch id="enable-shortcuts" checked={enableShortcuts} onCheckedChange={setEnableShortcuts} />
-              <Label htmlFor="enable-shortcuts">{language === "zh" ? "开启快捷键" : "Enable Keyboard Shortcuts"}</Label>
-            </div>
+                      <div className="flex items-center space-x-2">
+                      <Switch id="enable-shortcuts" checked={enableShortcuts} onCheckedChange={setEnableShortcuts} />
+                        <Label htmlFor="enable-shortcuts">Enable Keyboard Shortcuts</Label>
+                      </div>
 
-            {enableShortcuts && (
-              <div className="rounded-md border p-4">
-                <h3 className="mb-2 font-medium">{language === "zh" ? "可用快捷键" : "Available Shortcuts"}</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>N - {language === "zh" ? "创建新事件" : "New Event"}</div>
-                  <div>/ - {language === "zh" ? "搜索事件" : "Search Events"}</div>
-                  <div>T - {language === "zh" ? "今天" : "Today"}</div>
-                  <div>1 - {language === "zh" ? "日视图" : "Day View"}</div>
-                  <div>2 - {language === "zh" ? "周视图" : "Week View"}</div>
-                  <div>3 - {language === "zh" ? "月视图" : "Month View"}</div>
-                  <div>→ - {language === "zh" ? "下个周期" : "Next Period"}</div>
-                  <div>← - {language === "zh" ? "上个周期" : "Previous Period"}</div>
-                </div>
-              </div>
-            )}
+                  {enableShortcuts && (
+                        <div className="rounded-md border p-4">
+                          <h3 className="mb-2 font-medium">Available Shortcuts</h3>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                            <div>N - New Event</div>
+                            <div>/ - Search Events</div>
+                            <div>T - Today</div>
+                            <div>1 - Day View</div>
+                            <div>2 - Week View</div>
+                            <div>3 - Month View</div>
+                            <div>→ - Next Period</div>
+                            <div>← - Previous Period</div>
+                         </div>
+                     </div>
+                 )}
           </div>
         </ScrollArea>
       </SheetContent>

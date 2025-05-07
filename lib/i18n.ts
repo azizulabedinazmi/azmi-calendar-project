@@ -466,42 +466,42 @@ export const translations = {
   },
 }
 
-// 检测系统语言
+// Detect system language
 function detectSystemLanguage(): Language {
   if (typeof window === "undefined") {
-    return "zh" // 默认为中文
+    return "en" // Default to English
   }
 
-  // 获取浏览器语言
+  // Get browser language
   const browserLang = navigator.language.toLowerCase()
 
-  // 如果浏览器语言以zh开头（如zh-CN, zh-TW等），返回中文
+  // If browser language starts with zh (like zh-CN, zh-TW etc.), return Chinese
   if (browserLang.startsWith("zh")) {
     return "zh"
   }
 
-  // 否则返回英文
+  // Otherwise return English
   return "en"
 }
 
 export function useLanguage(): [Language, (lang: Language) => void] {
-  const [language, setLanguageState] = useState<Language>("zh") // 默认为中文
+  const [language, setLanguageState] = useState<Language>("en") // Default to English
 
-  // 从localStorage读取语言设置
+  // Read language from localStorage
   const readLanguageFromStorage = () => {
     const storedLanguage = localStorage.getItem("preferred-language")
     if (storedLanguage === "en" || storedLanguage === "zh") {
       return storedLanguage as Language
     }
-    return detectSystemLanguage()
+    return "en" // Default to English
   }
 
   useEffect(() => {
-    // 初始化时读取语言设置
+    // Initialize language setting
     const storedLanguage = readLanguageFromStorage()
     setLanguageState(storedLanguage)
 
-    // 创建一个事件监听器，当localStorage变化时触发
+    // Create event listener for localStorage changes
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "preferred-language") {
         const newLanguage = e.newValue as Language
@@ -520,7 +520,7 @@ export function useLanguage(): [Language, (lang: Language) => void] {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
     localStorage.setItem("preferred-language", lang)
-    // 触发一个自定义事件，通知其他组件语言已更改
+    // Trigger custom event to notify other components of language change
     window.dispatchEvent(new Event("languagechange"))
   }
 
