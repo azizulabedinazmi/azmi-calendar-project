@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { Groq } from 'groq-sdk';
+import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -30,23 +30,13 @@ export async function POST(req: Request) {
       model: "llama-3.3-70b-versatile",
       temperature: 0.7,
       max_tokens: 1024,
-      stream: true
+      stream: false
     });
 
-    const stream = new ReadableStream({
-      async start(controller) {
-        const encoder = new TextEncoder();
-
-        for await (const chunk of chatCompletion) {
-          const content = chunk.choices[0]?.delta?.content || '';
-          controller.enqueue(encoder.encode(content));
-        }
-
-        controller.close();
-      }
+    return NextResponse.json({ 
+      success: true, 
+      response: chatCompletion.choices[0]?.message?.content 
     });
-
-    return new Response(stream);
 
   } catch (error: any) {
     console.error('Groq API Error:', error);
