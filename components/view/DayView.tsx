@@ -26,7 +26,7 @@ interface DayViewProps {
   onDeleteEvent?: (event: CalendarEvent) => void
   onShareEvent?: (event: CalendarEvent) => void
   onBookmarkEvent?: (event: CalendarEvent) => void
-  onEventDrop?: (event: CalendarEvent, newStartDate: Date, newEndDate: Date) => void // 新增拖拽事件处理函数
+  onEventDrop?: (event: CalendarEvent, newStartDate: Date, newEndDate: Date) => void // Added event handler for dragging events
 }
 
 export default function DayView({ 
@@ -47,12 +47,12 @@ export default function DayView({
   const hasScrolledRef = useRef(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   
-  // 拖拽相关状态
+  // Drag-related states
   const [draggingEvent, setDraggingEvent] = useState<CalendarEvent | null>(null)
   const [dragStartPosition, setDragStartPosition] = useState<{ x: number; y: number } | null>(null)
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null)
   const [dragPreview, setDragPreview] = useState<{ hour: number; minute: number } | null>(null)
-  const [dragEventDuration, setDragEventDuration] = useState<number>(0) // 事件持续时间（分钟）
+  const [dragEventDuration, setDragEventDuration] = useState<number>(0) // Event duration in minutes
   const longPressTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isDraggingRef = useRef(false)
 
@@ -64,7 +64,7 @@ export default function DayView({
   }
 
   const formatTime = (hour: number) => {
-    // 使用24小时制格式化时间
+    // Format time using 24-hour format
     return `${hour.toString().padStart(2, "0")}:00`
   }
 
@@ -72,7 +72,7 @@ export default function DayView({
     const options: Intl.DateTimeFormatOptions = {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: false, // 使用24小时制
+      hour12: false, // Use 24-hour format
       timeZone: timezone,
     }
     return new Intl.DateTimeFormat(language === "zh" ? "zh-CN" : "en-US", options).format(date)
@@ -94,14 +94,14 @@ export default function DayView({
     return colorMapping[color] || '#3A3A3A';
   }
 
-  // 判断事件是否为全天事件
+  // Determine if an event is an all-day event
   const isAllDayEvent = (event: CalendarEvent) => {
     if (event.isAllDay) return true
     
     const start = new Date(event.startDate)
     const end = new Date(event.endDate)
     
-    // 检查是否为00:00-23:59的事件或跨夜事件(00:00-次日00:00)
+    // Check if it's a 00:00-23:59 event or an overnight event (00:00-next day 00:00)
     const isFullDay = 
       start.getHours() === 0 && 
       start.getMinutes() === 0 && 
@@ -111,7 +111,7 @@ export default function DayView({
     return isFullDay
   }
 
-  // 检查事件是否跨天
+  // Check if an event spans multiple days
   const isMultiDayEvent = (start: Date, end: Date) => {
     return (
       start.getDate() !== end.getDate() ||
@@ -120,7 +120,7 @@ export default function DayView({
     )
   }
 
-  // 将事件分为全天事件和正常事件
+  // Separate events into all-day events and regular events
   const separateEvents = (dayEvents: CalendarEvent[]) => {
     const allDayEvents: CalendarEvent[] = []
     const regularEvents: CalendarEvent[] = []
@@ -136,58 +136,58 @@ export default function DayView({
     return { allDayEvents, regularEvents }
   }
 
-  // 修改自动滚动到当前时间的效果,只在组件挂载时执行一次
+  // Auto-scroll to current time effect, only executed once when component mounts
   useEffect(() => {
-    // 只在组件挂载时执行一次滚动
+    // Only execute scroll once when component mounts
     if (!hasScrolledRef.current && scrollContainerRef.current) {
       const now = new Date()
       const currentHour = now.getHours()
 
-      // 找到对应当前小时的DOM元素
+      // Find DOM element corresponding to current hour
       const hourElements = scrollContainerRef.current.querySelectorAll(".h-\\[60px\\]")
       if (hourElements.length > 0 && currentHour < hourElements.length) {
-        // 获取当前小时的元素
-        const currentHourElement = hourElements[currentHour + 1] // +1 是因为第一行是时间标签
+        // Get element for current hour
+        const currentHourElement = hourElements[currentHour + 1] // +1 because first row is time labels
 
         if (currentHourElement) {
-          // 滚动到当前小时的位置,并向上偏移100px使其在视图中间偏上
+          // Scroll to current hour position, offset by 100px to position it in the upper-middle of the view
           scrollContainerRef.current.scrollTo({
             top: (currentHourElement as HTMLElement).offsetTop - 100,
             behavior: "auto",
           })
 
-          // 标记已经滚动过
+          // Mark as scrolled
           hasScrolledRef.current = true
         }
       }
     }
   }, [date])
 
-  // 修改时间更新逻辑,只更新时间线位置,不改变滚动位置
+  // Update time logic, only update timeline position without changing scroll position
   useEffect(() => {
-    // 立即更新时间
+    // Update time immediately
     setCurrentTime(new Date())
 
-    // 设置定时器每分钟更新时间
+    // Set timer to update time every minute
     const interval = setInterval(() => {
       setCurrentTime(new Date())
-      // 不再调用滚动函数
-    }, 60000) // 60000 ms = 1 分钟
+      // No longer calling scroll function
+    }, 60000) // 60000 ms = 1 minute
 
     return () => clearInterval(interval)
   }, [])
 
-  // 添加全局mouseup/mousemove监听器来处理拖拽
+  // Add global mouseup/mousemove listeners to handle dragging
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (draggingEvent && isDraggingRef.current && dragStartPosition && scrollContainerRef.current) {
-        // 计算鼠标相对于日历容器的位置
+        // Calculate mouse position relative to calendar container
         const containerRect = scrollContainerRef.current.getBoundingClientRect();
         
-        // 计算小时和分钟
+        // Calculate hour and minute
         const relativeY = e.clientY - containerRect.top + scrollContainerRef.current.scrollTop;
         const hour = Math.floor(relativeY / 60);
-        const minute = Math.floor((relativeY % 60) / 15) * 15; // 按15分钟取整
+        const minute = Math.floor((relativeY % 60) / 15) * 15; // Round to nearest 15 minutes
         
         setDragPreview({
           hour: hour,
@@ -198,18 +198,18 @@ export default function DayView({
     
     const handleMouseUp = () => {
       if (draggingEvent && isDraggingRef.current && dragPreview && onEventDrop) {
-        // 计算新的开始和结束时间
+        // Calculate new start and end times
         const newStartDate = new Date(date);
         newStartDate.setHours(dragPreview.hour, dragPreview.minute, 0, 0);
         
-        // 计算新的结束时间 (保持事件持续时间不变)
+        // Calculate new end time (keeping event duration unchanged)
         const newEndDate = add(newStartDate, { minutes: dragEventDuration });
         
-        // 调用回调函数更新事件
+        // Call callback function to update event
         onEventDrop(draggingEvent, newStartDate, newEndDate);
       }
       
-      // 清除拖拽状态
+      // Clear drag state
       isDraggingRef.current = false;
       setDraggingEvent(null);
       setDragStartPosition(null);
@@ -217,7 +217,7 @@ export default function DayView({
       setDragPreview(null);
     };
     
-    // 如果正在拖拽，添加全局事件监听器
+    // If currently dragging, add global event listeners
     if (draggingEvent) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
@@ -229,22 +229,22 @@ export default function DayView({
     };
   }, [draggingEvent, dragStartPosition, dragPreview, onEventDrop, date, dragEventDuration]);
 
-  // 获取当天的事件布局
+  // Get day's event layout
   const layoutEvents = (events: CalendarEvent[]) => {
     if (!events || events.length === 0) return []
 
-    // 按开始时间排序
+    // Sort by start time
     const sortedEvents = [...events].sort((a, b) => {
       const startA = new Date(a.startDate).getTime()
       const startB = new Date(b.startDate).getTime()
       return startA - startB
     })
 
-    // 创建时间段数组,每个时间段包含在该时间段内活跃的事件
+    // Create timepoints array, each timepoint contains events active during that time
     type TimePoint = { time: number; isStart: boolean; eventIndex: number }
     const timePoints: TimePoint[] = []
 
-    // 添加所有事件的开始和结束时间点
+    // Add all event start and end timepoints
     sortedEvents.forEach((event, index) => {
       const start = new Date(event.startDate)
       const end = new Date(event.endDate)
@@ -253,69 +253,69 @@ export default function DayView({
       timePoints.push({ time: end.getTime(), isStart: false, eventIndex: index })
     })
 
-    // 按时间排序
+    // Sort by time
     timePoints.sort((a, b) => {
-      // 如果时间相同,结束时间点排在开始时间点之前
+      // If times are the same, end timepoints come before start timepoints
       if (a.time === b.time) {
         return a.isStart ? 1 : -1
       }
       return a.time - b.time
     })
 
-    // 处理每个时间段
+    // Process each timepoint
     const eventLayouts: Array<{
       event: CalendarEvent
       column: number
       totalColumns: number
     }> = []
 
-    // 当前活跃的事件
+    // Currently active events
     const activeEvents = new Set<number>()
-    // 事件到列的映射
+    // Event to column mapping
     const eventToColumn = new Map<number, number>()
 
     for (let i = 0; i < timePoints.length; i++) {
       const point = timePoints[i]
 
       if (point.isStart) {
-        // 事件开始
+        // Event starts
         activeEvents.add(point.eventIndex)
 
-        // 找到可用的最小列号
+        // Find the lowest available column number
         let column = 0
         const usedColumns = new Set<number>()
 
-        // 收集当前已使用的列
+        // Collect currently used columns
         activeEvents.forEach((eventIndex) => {
           if (eventToColumn.has(eventIndex)) {
             usedColumns.add(eventToColumn.get(eventIndex)!)
           }
         })
 
-        // 找到第一个未使用的列
+        // Find first unused column
         while (usedColumns.has(column)) {
           column++
         }
 
-        // 分配列
+        // Assign column
         eventToColumn.set(point.eventIndex, column)
       } else {
-        // 事件结束
+        // Event ends
         activeEvents.delete(point.eventIndex)
       }
 
-      // 如果是最后一个时间点或下一个时间点与当前不同,处理当前时间段
+      // If last timepoint or next timepoint differs from current, process current timepoint
       if (i === timePoints.length - 1 || timePoints[i + 1].time !== point.time) {
-        // 计算当前活跃事件的布局
+        // Calculate layout for current active events
         const totalColumns =
           activeEvents.size > 0 ? Math.max(...Array.from(activeEvents).map((idx) => eventToColumn.get(idx)!)) + 1 : 0
 
-        // 更新所有活跃事件的总列数
+        // Update total columns for all active events
         activeEvents.forEach((eventIndex) => {
           const column = eventToColumn.get(eventIndex)!
           const event = sortedEvents[eventIndex]
 
-          // 检查是否已经添加过这个事件
+          // Check if this event has already been added
           const existingLayout = eventLayouts.find((layout) => layout.event.id === event.id)
 
           if (!existingLayout) {
@@ -332,17 +332,17 @@ export default function DayView({
     return eventLayouts
   }
 
-  // 处理事件拖拽开始
+  // Handle event drag start
   const handleEventDragStart = (event: CalendarEvent, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    // 使用定时器模拟长按效果，约300毫秒
+    // Use timer to simulate long press effect, about 300ms
     longPressTimeoutRef.current = setTimeout(() => {
       const start = new Date(event.startDate);
       const end = new Date(event.endDate);
       
-      // 计算事件持续时间（分钟）
+      // Calculate event duration (minutes)
       const durationMs = end.getTime() - start.getTime();
       const durationMinutes = Math.round(durationMs / (1000 * 60));
       
@@ -353,7 +353,7 @@ export default function DayView({
     }, 300);
   };
   
-  // 处理事件拖拽结束
+  // Handle event drag end
   const handleEventDragEnd = () => {
     if (longPressTimeoutRef.current) {
       clearTimeout(longPressTimeoutRef.current);
@@ -361,28 +361,28 @@ export default function DayView({
     }
   };
 
-  // 处理时间格子点击,根据点击位置确定更精确的时间
+  // Handle time slot click, determine more precise time based on click position
   const handleTimeSlotClick = (hour: number, event: React.MouseEvent<HTMLDivElement>) => {
-    // 获取点击位置在时间格子内的相对位置
+    // Get relative position of click within time cell
     const rect = event.currentTarget.getBoundingClientRect()
     const relativeY = event.clientY - rect.top
     const cellHeight = rect.height
 
-    // 根据点击位置确定分钟数
-    // 如果点击在格子的上半部分,分钟为0,否则为30
+    // Determine minutes based on click position
+    // If clicked in upper half of cell, minutes = 0, otherwise minutes = 30
     const minutes = relativeY < cellHeight / 2 ? 0 : 30
 
-    // 创建一个新的日期对象,设置为当前日期的指定小时和分钟
+    // Create new date object, set to current date with specified hour and minute
     const clickTime = new Date(date)
     clickTime.setHours(hour, minutes, 0, 0)
 
-    // 调用传入的回调函数
+    // Call provided callback function
     onTimeSlotClick(clickTime)
   }
 
-  // 渲染全天事件的函数
+  // Render all-day events function
   const renderAllDayEvents = (allDayEvents: CalendarEvent[]) => {
-    // 设置事件之间的间隔大小
+    // Set spacing between events
     const eventSpacing = 3;
     
     return allDayEvents.map((event, index) => (
@@ -441,7 +441,7 @@ export default function DayView({
     ))
   }
 
-  // 渲染拖拽预览
+  // Render drag preview
   const renderDragPreview = () => {
     if (!dragPreview || !draggingEvent) return null;
     
@@ -477,12 +477,12 @@ export default function DayView({
     );
   };
 
-  // 获取当前日期的事件
+  // Get events for the current date
   const dayEvents = events.filter(event => {
     const start = new Date(event.startDate);
     const end = new Date(event.endDate);
     
-    // 非全天事件使用原有逻辑检查
+    // For non-all-day events use original logic
     if (!isAllDayEvent(event)) {
       if (isSameDay(start, date)) return true;
       
@@ -500,16 +500,16 @@ export default function DayView({
     return isSameDay(start, date);
   });
   
-  // 分离全天事件和普通事件
+  // Separate all-day events and regular events
   const { allDayEvents, regularEvents } = separateEvents(dayEvents);
   
-  // 计算全天事件区域的高度
-  const eventSpacing = 2; // 保持与renderAllDayEvents函数中相同的值
+  // Calculate height of all-day events area
+  const eventSpacing = 2; // Keep consistent with renderAllDayEvents function
   const allDayEventsHeight = allDayEvents.length > 0 
     ? allDayEvents.length * 20 + (allDayEvents.length - 1) * eventSpacing 
     : 0;
   
-  // 对普通事件进行布局
+  // Layout regular events
   const eventLayouts = layoutEvents(regularEvents);
 
   return (
@@ -522,7 +522,7 @@ export default function DayView({
           <div className="text-3xl font-semibold text-blue-600">{format(date, "d")}</div>
         </div>
         <div className="p-2">
-          {/* 全天事件区域 */}
+          {/* All-day events area */}
           <div 
             className="relative" 
             style={{ height: allDayEventsHeight + "px" }}
@@ -558,15 +558,15 @@ export default function DayView({
             const endMinutes = end.getHours() * 60 + end.getMinutes()
             const duration = endMinutes - startMinutes
 
-            // 确保事件不会超出当天的时间范围
-            const maxEndMinutes = 24 * 60 // 最大到午夜
+            // Ensure events don't extend beyond the day's time range
+            const maxEndMinutes = 24 * 60 // Maximum midnight
             const displayDuration = Math.min(duration, maxEndMinutes - startMinutes)
 
-            // 设置最小高度,确保短事件也能显示文本
-            const minHeight = 20 // 最小高度为20px
+            // Set minimum height to ensure short events can display text
+            const minHeight = 20 // Minimum height 20px
             const height = Math.max(displayDuration, minHeight)
 
-            // 计算事件宽度和位置,处理重叠
+            // Calculate event width and position, handle overlaps
             const width = `calc((100% - 8px) / ${totalColumns})`
             const left = `calc(${column} * ${width})`
 
@@ -627,18 +627,18 @@ export default function DayView({
             )
           })}
 
-          {/* 拖拽预览 */}
+          {/* Drag preview */}
           {dragPreview && renderDragPreview()}
 
           {(() => {
-            // 检查当前日期是否是今天
+            // Check if current date is today
             const today = new Date()
             const isToday = isSameDay(date, today)
 
-            // 只在今天显示时间指示器
+            // Only show time indicator for today
             if (!isToday) return null
 
-            // 获取当前时区的时间
+            // Get current time in the specified timezone
             const timeOptions: Intl.DateTimeFormatOptions = {
               hour: "2-digit",
               minute: "2-digit",
@@ -646,13 +646,13 @@ export default function DayView({
               timeZone: timezone,
             }
 
-            // 获取小时和分钟
+            // Get hours and minutes
             const timeString = new Intl.DateTimeFormat("en-US", timeOptions).format(currentTime)
             const [hoursStr, minutesStr] = timeString.split(":")
             const currentHours = Number.parseInt(hoursStr, 10)
             const currentMinutes = Number.parseInt(minutesStr, 10)
 
-            // 计算像素位置
+            // Calculate pixel position
             const topPosition = currentHours * 60 + currentMinutes
 
             return (
