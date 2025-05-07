@@ -8,7 +8,7 @@ const notificationSounds: Record<NOTIFICATION_SOUNDS, string> = {
   telegram: "https://cdn.xyehr.cn/source/Voicy_Telegram_notification.mp3",
 };
 
-// Clear all notification timers
+// 清除所有的通知计时器
 export const clearAllNotificationTimers = () => {
   if (notificationInterval) {
     clearInterval(notificationInterval);
@@ -16,7 +16,7 @@ export const clearAllNotificationTimers = () => {
   }
 };
 
-// Check pending notifications
+// 检查待处理的通知
 export const checkPendingNotifications = () => {
   const now = Date.now();
   const pendingEvents = getPendingEvents(now);
@@ -27,19 +27,19 @@ export const checkPendingNotifications = () => {
   });
 };
 
-// Get pending events
+// 获取待处理的事件
 const getPendingEvents = (currentTime: number) => {
   const events = JSON.parse(localStorage.getItem("events") || "[]");
   return events.filter((event: any) => event.notificationTime <= currentTime);
 };
 
-// Play notification sound
+// 播放通知声音
 const triggerNotification = (event: any) => {
   const sound = notificationSounds["telegram"];
   new Audio(sound).play();
 };
 
-// Show Toast notification
+// 显示 Toast 通知
 const showToast = (event: any) => {
   toast(`${event.title}`, {
     description: event.description || "No content",

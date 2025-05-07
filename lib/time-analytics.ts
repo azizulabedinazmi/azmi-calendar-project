@@ -20,38 +20,38 @@ export interface TimeAnalytics {
 export const defaultTimeCategories: TimeCategory[] = [
   {
     id: "work",
-    name: "Work",
+    name: "工作",
     color: "bg-blue-500",
-    keywords: ["meeting", "work", "project", "discussion"],
+    keywords: ["会议", "工作", "项目", "讨论", "meeting", "work", "project"],
   },
   {
     id: "personal",
-    name: "Personal",
+    name: "个人",
     color: "bg-green-500",
-    keywords: ["gym", "workout", "rest", "entertainment", "personal"],
+    keywords: ["健身", "锻炼", "休息", "娱乐", "personal", "gym", "workout", "rest"],
   },
   {
     id: "learning",
-    name: "Learning",
+    name: "学习",
     color: "bg-purple-500",
-    keywords: ["study", "course", "training", "workshop"],
+    keywords: ["学习", "课程", "培训", "研讨会", "study", "course", "training"],
   },
   {
     id: "social",
-    name: "Social",
+    name: "社交",
     color: "bg-yellow-500",
-    keywords: ["party", "date", "friends", "family", "gathering"],
+    keywords: ["聚会", "约会", "朋友", "家人", "party", "date", "friends", "family"],
   },
   {
     id: "health",
-    name: "Health",
+    name: "健康",
     color: "bg-red-500",
-    keywords: ["doctor", "hospital", "checkup", "health", "medical"],
+    keywords: ["医生", "医院", "检查", "doctor", "hospital", "checkup", "health"],
   },
 ]
 
 export function analyzeTimeUsage(events: any[], categories: TimeCategory[] = defaultTimeCategories): TimeAnalytics {
-  // Initialize results
+  // 初始化结果
   const result: TimeAnalytics = {
     totalEvents: events.length,
     totalHours: 0,
@@ -64,29 +64,29 @@ export function analyzeTimeUsage(events: any[], categories: TimeCategory[] = def
     },
   }
 
-  // Initialize category time
+  // 初始化分类时间
   categories.forEach((category) => {
     result.categorizedHours[category.id] = 0
   })
   result.categorizedHours["uncategorized"] = 0
 
-  // Count events by day and hour
+  // 按天和小时统计事件
   const eventsByDay: Record<string, number> = {}
   const eventsByHour: Record<number, number> = {}
   for (let i = 0; i < 24; i++) {
     eventsByHour[i] = 0
   }
 
-  // Analyze each event
+  // 分析每个事件
   events.forEach((event) => {
     const startDate = new Date(event.startDate)
     const endDate = new Date(event.endDate)
     const durationHours = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60)
 
-    // Update total time
+    // 更新总时间
     result.totalHours += durationHours
 
-    // Update longest event
+    // 更新最长事件
     if (durationHours > result.longestEvent.duration) {
       result.longestEvent = {
         title: event.title,
@@ -94,21 +94,21 @@ export function analyzeTimeUsage(events: any[], categories: TimeCategory[] = def
       }
     }
 
-    // Count by day
+    // 按天统计
     const dayKey = startDate.toISOString().split("T")[0]
     eventsByDay[dayKey] = (eventsByDay[dayKey] || 0) + durationHours
 
-    // Count by hour
+    // 按小时统计
     const hour = startDate.getHours()
     eventsByHour[hour] = (eventsByHour[hour] || 0) + 1
 
-    // First check if event has calendarId, if yes, use that category directly
+    // 首先检查事件是否有calendarId，如果有，直接使用该分类
     if (event.calendarId && categories.some((cat) => cat.id === event.calendarId)) {
       result.categorizedHours[event.calendarId] += durationHours
-      return // Already categorized, skip keyword matching
+      return // 已分类，跳过关键词匹配
     }
 
-    // If no calendarId or calendarId not in category list, try keyword matching
+    // 如果没有calendarId或calendarId不在分类列表中，尝试通过关键词匹配
     let categorized = false
     for (const category of categories) {
       const matchesKeyword = category.keywords.some(
@@ -129,7 +129,7 @@ export function analyzeTimeUsage(events: any[], categories: TimeCategory[] = def
     }
   })
 
-  // Find most productive day
+  // 找出最高效的日子
   let maxHours = 0
   for (const [day, hours] of Object.entries(eventsByDay)) {
     if (hours > maxHours) {
@@ -138,7 +138,7 @@ export function analyzeTimeUsage(events: any[], categories: TimeCategory[] = def
     }
   }
 
-  // Find most productive hour
+  // 找出最高效的小时
   let maxEvents = 0
   for (const [hour, count] of Object.entries(eventsByHour)) {
     if (count > maxEvents) {
