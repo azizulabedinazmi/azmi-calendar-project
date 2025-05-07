@@ -94,10 +94,27 @@ body {
 }
 
 /* Add smooth transitions for theme changes */
+:root {
+  color-scheme: light dark;
+}
+
 * {
   transition: background-color 0.3s ease-in-out, 
               border-color 0.3s ease-in-out, 
               color 0.3s ease-in-out, 
               fill 0.3s ease-in-out, 
-              stroke 0.3s ease-in-out;
+              stroke 0.3s ease-in-out,
+              box-shadow 0.3s ease-in-out;
+}
+
+html {
+  transition: background-color 0.3s ease-in-out;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
 }
