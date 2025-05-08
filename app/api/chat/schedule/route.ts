@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { Groq } from 'groq-sdk';
+import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: `当前值: ${JSON.stringify(currentValues)}\n用户提示: ${prompt}` }
       ],
-      model: 'llama-3.3-70b-versatile',
+      model: 'gemma2-9b-it',
       temperature: 0.3,
       response_format: { type: 'json_object' }
     });
