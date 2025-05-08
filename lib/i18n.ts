@@ -249,7 +249,7 @@ export const translations = {
     day: "日",
     week: "周",
     month: "月",
-    analytics: "分析",
+    analytics: "Analytics",
     searchEvents: "搜索日程",
     title: "标题",
     startTime: "开始时间",
