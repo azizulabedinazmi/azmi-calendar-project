@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { User, BookText, Plus, ArrowLeft, BarChart2, Edit2, Trash2, Calendar, Bookmark, MessageSquare } from 'lucide-react'
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
-import { translations, useLanguage } from "@/lib/i18n"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import MiniCalendarSheet from "./MiniCalendarSheet"
-import BookmarkPanel from "./BookmarkPanel"
-import AIChatSheet from "./AIChat"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
+import { translations, useLanguage } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
+import { ArrowLeft, BarChart2, Bookmark, BookText, Calendar, Edit2, MessageSquare, Plus, Trash2, User } from 'lucide-react'
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import AIChatSheet from "./AIChat"
+import BookmarkPanel from "./BookmarkPanel"
+import MiniCalendarSheet from "./MiniCalendarSheet"
 
-// 通讯录类型定义
+// Contact type definition
 interface Contact {
   id: string
   name: string
@@ -30,7 +30,7 @@ interface Contact {
   color: string
 }
 
-// 记事本类型定义
+// Note type definition
 interface Note {
   id: string
   title: string
@@ -39,7 +39,7 @@ interface Note {
   completed?: boolean
 }
 
-// 颜色选项
+// Color options
 const colorOptions = [
   { value: "bg-blue-500", label: "Blue" },
   { value: "bg-green-500", label: "Green" },
@@ -52,7 +52,7 @@ const colorOptions = [
   { value: "bg-teal-500", label: "Teal" },
 ]
 
-// 联系人视图类型
+// Contact view types
 type ContactView = "list" | "detail" | "edit"
 
 interface RightSidebarProps {
@@ -64,7 +64,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
   const [language] = useLanguage()
   const t = translations[language]
 
-  // 状态管理
+  // State management
   const [contactsOpen, setContactsOpen] = useState(false)
   const [notesOpen, setNotesOpen] = useState(false)
   const [miniCalendarOpen, setMiniCalendarOpen] = useState(false)
@@ -78,8 +78,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
   const [bookmarkPanelOpen, setBookmarkPanelOpen] = useState(false)
   const router = useRouter();
 
-
-  // 联系人视图状态
+  // Contact view state
   const [contactView, setContactView] = useState<ContactView>("list")
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [newContact, setNewContact] = useState<Partial<Contact>>({
@@ -91,14 +90,14 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     address: "",
     birthday: "",
     notes: "",
-    color: "bg-blue-500", // 默认颜色
+    color: "bg-blue-500", // Default color
   })
 
-  // 笔记编辑状态
+  // Note editing state
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
 
   useEffect(() => {
-    // 从localStorage加载联系人数据
+    // Load contacts data from localStorage
     const storedContacts = localStorage.getItem("contacts")
     if (storedContacts) {
       try {
@@ -108,7 +107,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
       }
     }
 
-    // 从localStorage加载笔记数据
+    // Load notes data from localStorage
     const storedNotes = localStorage.getItem("notes")
     if (storedNotes) {
       try {
@@ -119,7 +118,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     }
   }, [])
 
-  // 添加新联系人
+  // Add new contact
   const startAddContact = () => {
     setNewContact({
       name: "",
@@ -130,42 +129,42 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
       address: "",
       birthday: "",
       notes: "",
-      color: "bg-blue-500", // 默认颜色
+      color: "bg-blue-500", // Default color
     })
     setContactView("edit")
     setSelectedContact(null)
   }
 
-  // 编辑联系人
+  // Edit contact
   const startEditContact = (contact: Contact) => {
     setSelectedContact(contact)
     setNewContact({ ...contact })
     setContactView("edit")
   }
 
-  // 查看联系人详情
+  // View contact details
   const viewContactDetail = (contact: Contact) => {
     setSelectedContact(contact)
     setContactView("detail")
   }
 
-  // 返回联系人列表
+  // Return to contact list
   const backToContactList = () => {
     setContactView("list")
     setSelectedContact(null)
   }
 
-  // 保存联系人
+  // Save contact
   const saveContact = () => {
-    if (!newContact.name || !newContact.color) return // 名称和颜色是必填项
+    if (!newContact.name || !newContact.color) return // Name and color are required fields
 
     let updatedContacts = []
 
     if (selectedContact) {
-      // 更新现有联系人
+      // Update existing contact
       updatedContacts = contacts.map((c) => (c.id === selectedContact.id ? ({ ...c, ...newContact } as Contact) : c))
     } else {
-      // 添加新联系人
+      // Add new contact
       const contact = {
         ...newContact,
         id: Date.now().toString(),
@@ -173,7 +172,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
       updatedContacts = [...contacts, contact]
     }
 
-    // 更新状态和localStorage
+    // Update state and localStorage
     setContacts(updatedContacts)
     localStorage.setItem("contacts", JSON.stringify(updatedContacts))
 
@@ -181,7 +180,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     setSelectedContact(null)
   }
 
-  // 删除联系人
+  // Delete contact
   const deleteContact = (id: string) => {
     const updatedContacts = contacts.filter((contact) => contact.id !== id)
     setContacts(updatedContacts)
@@ -193,7 +192,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     }
   }
 
-  // 添加新笔记
+  // Add new note
   const addNote = () => {
     const newNote: Note = {
       id: Date.now().toString(),
@@ -206,14 +205,14 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     setEditingNoteId(newNote.id)
   }
 
-  // 更新笔记
+  // Update note
   const updateNote = (id: string, data: Partial<Note>) => {
     const updatedNotes = notes.map((note) => (note.id === id ? { ...note, ...data } : note))
     setNotes(updatedNotes)
     localStorage.setItem("notes", JSON.stringify(updatedNotes))
   }
 
-  // 删除笔记
+  // Delete note
   const deleteNote = (id: string) => {
     const updatedNotes = notes.filter((note) => note.id !== id)
     setNotes(updatedNotes)
@@ -224,19 +223,19 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     }
   }
 
-  // 处理分析按钮点击
+  // Handle analytics button click
   const handleAnalyticsClick = () => {
     if (onViewChange) {
       onViewChange("analytics")
     }
   }
 
-  // 处理日期选择
+  // Handle date selection
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date)
   }
 
-  // 渲染联系人列表视图
+  // Render contact list view
   const renderContactListView = () => (
     <>
       <SheetHeader className="p-4 border-b">
@@ -300,7 +299,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     </>
   )
 
-  // 渲染联系人详情视图
+  // Render contact detail view
   const renderContactDetailView = () => {
     if (!selectedContact) return null
 
@@ -398,7 +397,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     )
   }
 
-  // 渲染联系人编辑视图
+  // Render contact edit view
   const renderContactEditView = () => (
     <div className="h-full flex flex-col">
       <SheetHeader className="p-4 border-b">
@@ -550,7 +549,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
 
   return (
     <>
-      {/* 右侧图标栏 - 固定在右侧 */}
+      {/* Right sidebar - Fixed on the right side */}
       <div className="w-14 bg-background border-l flex flex-col items-center py-4 absolute right-0 top-16 bottom-0 z-30">
         <div className="flex flex-col items-center space-y-4 flex-1">
           {/* Mini Calendar Button */}
@@ -630,37 +629,37 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
           </Button>
           
           <AIChatSheet 
-        open={chatOpen}
-        onOpenChange={setChatOpen}
-        trigger={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full p-0 w-12 h-12 flex items-center justify-center"
-            onClick={() => setChatOpen(true)}
-          >
-            <div
-              className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center bg-teal-500",
-                chatOpen && "ring-2 ring-primary",
-              )}
-            >
-              <MessageSquare className="h-6 w-6 text-white dark:text-white" />
-            </div>
-          </Button>
-        }
-        systemPrompt="你是一个日历 app 的 ai 助手，用户向你只能向你提问关于日历以及一些日程、时间等的问题，其他问题一律无视。以及禁止使用 markdown 输出，只能输出纯文本，当然可用 emoji，但是少量使用。你需要分析用户输入的语言并使用用户发送的语言回复，这里的中文提示词只是告诉你，并不是代表使用中文回答"
-      />
+            open={chatOpen}
+            onOpenChange={setChatOpen}
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full p-0 w-12 h-12 flex items-center justify-center"
+                onClick={() => setChatOpen(true)}
+              >
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center bg-teal-500",
+                    chatOpen && "ring-2 ring-primary",
+                  )}
+                >
+                  <MessageSquare className="h-6 w-6 text-white dark:text-white" />
+                </div>
+              </Button>
+            }
+            systemPrompt="You are an AI assistant for a calendar app. Users can only ask you questions about calendars, schedules, time management, and related topics. Ignore all other questions. Respond without using markdown formatting, using only plain text. You may use emojis sparingly. Analyze the language the user is using and respond in the same language."
+          />
         </div>
       </div>
 
-      {/* 通讯录面板 - 使用Sheet组件 */}
+      {/* Contacts panel - Using Sheet component */}
       <Sheet
         open={contactsOpen}
         onOpenChange={(open) => {
           setContactsOpen(open)
           if (!open) {
-            // 当关闭面板时，重置为列表视图
+            // When closing the panel, reset to list view
             setContactView("list")
           }
         }}
@@ -672,7 +671,7 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
         </SheetContent>
       </Sheet>
 
-      {/* 记事本面板 - 使用Sheet组件 */}
+      {/* Notes panel - Using Sheet component */}
       <Sheet open={notesOpen} onOpenChange={setNotesOpen}>
         <SheetContent side="right" className="w-[350px] sm:w-[400px] p-0">
           <SheetHeader className="p-4 border-b">
@@ -786,4 +785,3 @@ export default function RightSidebar({ onViewChange, onEventClick }: RightSideba
     </>
   )
 }
-

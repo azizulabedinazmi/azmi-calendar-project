@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
 import { GithubIcon } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export default function PrivacyPolicy() {
   const [lang, setLang] = useState<"en" | "zh">("en")
@@ -105,98 +105,6 @@ export default function PrivacyPolicy() {
       cta: "Have feedback or want to contribute to One Calendar?",
       github: "Visit our GitHub",
       home: "Back to Home"
-    },
-    zh: {
-      title: "One Calendar 隐私政策",
-      lastUpdated: "最后更新：2025年5月2日",
-      intro: "在 One Calendar，我们重视您的隐私，并致力于保护您的个人信息。本隐私政策说明了您使用我们的服务（包括网站和应用程序）时，我们如何收集、使用、存储和保护您的数据。",
-      sections: [
-        {
-          heading: "1. 我们收集的信息",
-          content: [
-            "账户信息：当您通过 Clerk 认证（GitHub、Google 或 Microsoft）注册时，我们会收集这些服务提供的电子邮件地址、姓名和个人资料信息，以创建和管理您的账户。",
-            "日历数据：您在 One Calendar 中输入的事件、日程和其他相关数据将被存储，以提供我们的日程安排和协作功能。",
-            "使用数据：我们会收集您与我们服务交互的信息，例如访问的页面、使用的功能以及设备信息（例如浏览器类型、IP 地址）。",
-            "上传的文件：您通过 Vercel Blob 或 Misskey Drive 上传的任何文件仅用于增强您的使用体验",
-            "地点数据：我们会请求收集您的地点数据来获取您地区的天气，当然这是可选的，您可以拒绝它，不过天气组件可能不会正常工作。"
-          ]
-        },
-        {
-          heading: "2. 我们如何使用您的信息",
-          content: [
-            "提供和改进我们的服务，包括个性化您的日历体验和启用协作功能。",
-            "通过 Clerk 验证您的身份，确保账户安全访问。",
-            "分析使用模式，优化平台性能和用户体验。",
-            "与您沟通，例如发送服务相关通知或回复您的询问。"
-          ]
-        },
-        {
-          heading: "3. 数据存储与安全",
-          content: [
-            "您的数据通过 Vercel 的基础设施或 Misskey Drive 安全存储，数据在传输和静态时均进行加密。",
-            "通过 Vercel Blob 或 Misskey Drive 上传的文件以确保只有您（以及您明确共享的人）可以访问的方式存储。",
-            "我们采用行业标准的安全措施，保护您的数据免受未经授权的访问、更改或披露。",
-            "虽然我们努力保护您的信息，但没有任何系统是完全安全的，我们无法保证绝对的安全性。"
-          ]
-        },
-        {
-          heading: "4. 第三方服务",
-          content: [
-            "Clerk 认证：我们使用 Clerk 管理用户认证。当您通过 GitHub、Google 或 Microsoft 登录时，Clerk 会处理您的凭据并与我们共享有限的个人资料信息。请参阅 Clerk 的隐私政策以了解详情。",
-            "Vercel Blob：您上传的文件通过 Vercel Blob 存储。Vercel 的隐私政策规定了他们对您数据的处理方式。",
-            "Misskey Drive：您上传的文件通过 Misskey Drive 存储。Misskey 的隐私政策规定了他们对您数据的处理方式。",
-            "Groq: 你的 AI 聊天记录会发送到 Groq 进行 AI 回复。Groq 的隐私政策规定了他们对你的数据的处理方式。",
-            "除非为了提供我们的服务或法律要求，我们不会与其他第三方共享您的数据。"
-          ]
-        },
-        {
-          heading: "5. 数据共享与披露",
-          content: [
-            "您的日历数据默认是私密的，只有在您明确启用协作功能时才会与他人共享。",
-            "如果法律要求，例如响应法院命令或传票，我们可能会披露您的信息。",
-            "如果发生合并、收购或资产出售，您的信息可能会作为交易的一部分转移，我们将采取措施保护您的隐私。"
-          ]
-        },
-        {
-          heading: "6. 您的权利与选择",
-          content: [
-            "您可以随时通过 One Calendar 账户设置访问、更新或删除您的账户信息。",
-            "您可以通过调整通知偏好来选择退出非必要通信。",
-            "如果您所在地区有特定的数据保护法律（例如 GDPR 或 CCPA），您可能拥有额外权利，例如请求数据副本或限制某些处理。请联系我们以行使这些权利。"
-          ]
-        },
-        {
-          heading: "7. 数据保留",
-          content: [
-            "只要您的账户处于活跃状态或我们需要提供服务，我们就会保留您的数据。",
-            "如果您删除账户，我们将在 30 天内删除您的个人信息和上传的文件，除非法律要求保留数据。"
-          ]
-        },
-        {
-          heading: "8. 儿童隐私",
-          content: [
-            "One Calendar 是一个简单且安全的日历工具，适合包括儿童在内的所有年龄段用户。家长或监护人可以管理儿童的账户，以确保适当使用。",
-            "我们以与成人相同的方式收集和处理儿童的个人信息，但我们鼓励家长监督以确保隐私和安全。"
-          ]
-        },
-        {
-          heading: "9. 本隐私政策的变更",
-          content: [
-            "我们可能会不时更新本隐私政策。变更将在本页面发布，并更新“最后更新”日期。",
-            "我们鼓励您定期查看本政策，以了解我们如何保护您的数据。"
-          ]
-        },
-        {
-          heading: "10. 联系我们",
-          content: [
-            "如果您对本隐私政策有任何疑问或担忧，请通过 evan.huang000@proton.me 或 GitHub 联系我们。",
-            "您也可以联系我们提供反馈或报告与隐私相关的问题。"
-          ]
-        }
-      ],
-      cta: "有反馈或想为 One Calendar 做贡献？",
-      github: "访问我们的 GitHub",
-      home: "返回首页"
     }
   }
 
