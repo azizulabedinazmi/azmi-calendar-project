@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-export type Language = "en"
+export type Language = "en" | "zh"
 
 export const translations = {
   en: {
@@ -239,41 +239,51 @@ export const translations = {
     qrCodeDownloaded: "QR Code Downloaded",
     savedToDevice: "Saved to your device",
     scanQRCodeToView: "Scan this QR code to view the event",
-  }
+  },
 }
 
-/**
- * Detects the system language 
- * In this version, we only support English
- */
+// 检测系统语言
 function detectSystemLanguage(): Language {
-  // Always return English as we only support English now
+  if (typeof window === "undefined") {
+    return "en" // Default to English
+  }
+
+  // Get browser language
+  const browserLang = navigator.language.toLowerCase()
+
+  // 如果浏览器语言以zh开头（如zh-CN, zh-TW等），返回中文
+  if (browserLang.startsWith("zh")) {
+    return "zh"
+  }
+
+  // 否则返回英文
   return "en"
 }
 
-/**
- * Custom hook for language management
- * Returns the current language and a function to update it
- */
 export function useLanguage(): [Language, (lang: Language) => void] {
-  const [language, setLanguageState] = useState<Language>("en") // Default to English
+  const [language, setLanguageState] = useState<Language>("zh") // 默认为中文
 
-  // Read language setting from localStorage
+  // 从localStorage读取语言设置
   const readLanguageFromStorage = () => {
-    // We only support English now, so always return "en"
-    return "en" as Language
+    const storedLanguage = localStorage.getItem("preferred-language")
+    if (storedLanguage === "en" || storedLanguage === "zh") {
+      return storedLanguage as Language
+    }
+    return detectSystemLanguage()
   }
 
   useEffect(() => {
-    // Initialize language setting
+    // 初始化时读取语言设置
     const storedLanguage = readLanguageFromStorage()
     setLanguageState(storedLanguage)
 
-    // Create an event listener for localStorage changes
+    // 创建一个事件监听器，当localStorage变化时触发
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "preferred-language") {
-        // Always use English
-        setLanguageState("en")
+        const newLanguage = e.newValue as Language
+        if (newLanguage === "en" || newLanguage === "zh") {
+          setLanguageState(newLanguage)
+        }
       }
     }
 
@@ -284,12 +294,12 @@ export function useLanguage(): [Language, (lang: Language) => void] {
   }, [])
 
   const setLanguage = (lang: Language) => {
-    // We only support English, so always set to "en" regardless of input
-    setLanguageState("en")
-    localStorage.setItem("preferred-language", "en")
-    // Trigger a custom event to notify other components that language has changed
+    setLanguageState(lang)
+    localStorage.setItem("preferred-language", lang)
+    // 触发一个自定义事件，通知其他组件语言已更改
     window.dispatchEvent(new Event("languagechange"))
   }
 
   return [language, setLanguage]
 }
+
