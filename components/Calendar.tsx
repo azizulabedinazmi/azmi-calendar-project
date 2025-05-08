@@ -43,22 +43,7 @@ export interface CalendarEvent {
   calendarId: string
 }
 
-export type Language = "en"
-
-const NOTIFICATION_SOUNDS = {
-  telegram: "telegram",
-  telegramSfx: "telegramSfx"
-} as const
-
-interface SidebarProps {
-  onCreateEvent: () => void
-  onDateSelect: (date: Date) => void
-  onViewChange: (view: ViewType) => void
-  language?: Language
-  selectedDate?: Date
-  isCollapsed?: boolean
-  onToggleCollapse?: () => void
-}
+export type Language = "en" | "zh"
 
 export default function Calendar() {
   const [openShareImmediately, setOpenShareImmediately] = useState(false)
@@ -71,14 +56,14 @@ export default function Calendar() {
   const [searchTerm, setSearchTerm] = useState("")
   const calendarRef = useRef<HTMLDivElement>(null)
   const [language, setLanguage] = useLanguage()
-  const t = translations.en // Always use English translations
+  const t = translations[language]
   const [firstDayOfWeek, setFirstDayOfWeek] = useLocalStorage<number>("first-day-of-week", 0)
   const [timezone, setTimezone] = useLocalStorage<string>("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone)
   const [notificationSound, setNotificationSound] = useLocalStorage<keyof typeof NOTIFICATION_SOUNDS>(
     "notification-sound",
     "telegram",
   )
-  const notificationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const notificationIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const notificationsInitializedRef = useRef(false)
   const [previewEvent, setPreviewEvent] = useState<CalendarEvent | null>(null)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -176,7 +161,7 @@ export default function Calendar() {
   }
 
   const handlePrevious = () => {
-    setDate((prevDate: Date) => {
+    setDate((prevDate) => {
       if (view === "day") return subDays(prevDate, 1)
       if (view === "week") return subDays(prevDate, 7)
       return subDays(prevDate, 30)
@@ -184,7 +169,7 @@ export default function Calendar() {
   }
 
   const handleNext = () => {
-    setDate((prevDate: Date) => {
+    setDate((prevDate) => {
       if (view === "day") return addDays(prevDate, 1)
       if (view === "week") return addDays(prevDate, 7)
       return addDays(prevDate, 30)
@@ -193,8 +178,13 @@ export default function Calendar() {
 
   // 修改：根据语言设置不同的日期格式
   const formatDateDisplay = (date: Date) => {
-    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" }
-    return date.toLocaleDateString("en", options)
+    if (language === "en") {
+      const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" }
+      return date.toLocaleDateString(language, options)
+    } else {
+      const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" }
+      return date.toLocaleDateString(language, options)
+    }
   }
 
   const handleEventClick = (event: CalendarEvent) => {
@@ -209,21 +199,21 @@ export default function Calendar() {
       id: event.id || Date.now().toString() + Math.random().toString(36).substring(2, 9),
     }
 
-    setEvents((prevEvents: CalendarEvent[]) => [...prevEvents, newEvent])
+    setEvents((prevEvents) => [...prevEvents, newEvent])
     setEventDialogOpen(false)
     setSelectedEvent(null)
     setQuickCreateStartTime(null) // Reset the quick create time
   }
 
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
-    setEvents((prevEvents: CalendarEvent[]) => prevEvents.map((event: CalendarEvent) => (event.id === updatedEvent.id ? updatedEvent : event)))
+    setEvents((prevEvents) => prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)))
     setEventDialogOpen(false)
     setSelectedEvent(null)
     setQuickCreateStartTime(null) // Reset the quick create time
   }
 
   const handleEventDelete = (eventId: string) => {
-    setEvents((prevEvents: CalendarEvent[]) => prevEvents.filter((event: CalendarEvent) => event.id !== eventId))
+    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId))
     setEventDialogOpen(false)
     setSelectedEvent(null) // 重置选中的事件
   }
@@ -233,7 +223,7 @@ export default function Calendar() {
       ...event,
       id: Math.random().toString(36).substring(7),
     })) as CalendarEvent[]
-    setEvents((prevEvents: CalendarEvent[]) => [...prevEvents, ...newEvents])
+    setEvents((prevEvents) => [...prevEvents, ...newEvents])
   }
 
   // 修改handleEventEdit函数，确保正确传递事件对象的深拷贝
@@ -249,7 +239,7 @@ export default function Calendar() {
 
   const handleEventDuplicate = (event: CalendarEvent) => {
     const duplicatedEvent = { ...event, id: Math.random().toString(36).substring(7) }
-    setEvents((prevEvents: CalendarEvent[]) => [...prevEvents, duplicatedEvent])
+    setEvents((prevEvents) => [...prevEvents, duplicatedEvent])
     setPreviewOpen(false)
   }
 
@@ -257,6 +247,8 @@ export default function Calendar() {
   const handleTimeSlotClick = (clickTime: Date) => {
     // 设置快速创建时间
     setQuickCreateStartTime(clickTime)
+
+    // 重要：设置为null表示创建新事件
     setSelectedEvent(null)
     setEventDialogOpen(true)
   }
