@@ -75,7 +75,7 @@ export async function POST(req: Request) {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: `Current values: ${JSON.stringify(currentValues)}\nUser prompt: ${prompt}` }
       ],
-      model: 'llama-3.3-70b-versatile',
+      model: 'mixtral-8x7b-32768',
       temperature: 0.3,
       response_format: { type: 'json_object' }
     });
