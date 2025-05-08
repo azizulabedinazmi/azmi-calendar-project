@@ -3,6 +3,15 @@ import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
+interface ChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+interface RequestBody {
+  messages: ChatMessage[];
+}
+
 export async function POST(req: Request) {
   try {
     if (!process.env.GROQ_API_KEY) {
@@ -19,15 +28,22 @@ export async function POST(req: Request) {
       );
     }
 
+    const { messages } = await req.json() as RequestBody;
+    
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json(
+        { error: 'Bad Request', message: 'Messages array is required' },
+        { status: 400 }
+      );
+    }
+
     const groq = new Groq({
       apiKey: process.env.GROQ_API_KEY
     });
 
-    const { messages } = await req.json();
-
     const chatCompletion = await groq.chat.completions.create({
       messages,
-      model: "llama-3.3-70b-versatile",
+      model: "gemma2-9b-it",
       temperature: 0.7,
       max_tokens: 1024,
       stream: true
@@ -37,23 +53,33 @@ export async function POST(req: Request) {
       async start(controller) {
         const encoder = new TextEncoder();
 
-        for await (const chunk of chatCompletion) {
-          const content = chunk.choices[0]?.delta?.content || '';
-          controller.enqueue(encoder.encode(content));
+        try {
+          for await (const chunk of chatCompletion) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            controller.enqueue(encoder.encode(content));
+          }
+          controller.close();
+        } catch (error) {
+          console.error('Stream error:', error);
+          controller.error(error);
         }
-
-        controller.close();
       }
     });
 
-    return new Response(stream);
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
 
   } catch (error: any) {
-    console.error('Groq API Error:', error);
+    console.error('Chat API Error:', error);
     return NextResponse.json(
       {
-        error: 'Groq API Error',
-        message: error.message
+        error: 'Chat API Error',
+        message: error.message || 'An unexpected error occurred'
       },
       { status: 500 }
     );

@@ -15,8 +15,8 @@ Output requirements:
 Example output:
 {
   "title": "Team Meeting",
-  "startDate": "2025-04-29T10:00:00",
-  "endDate": "2025-04-29T11:00:00",
+  "startDate": "2025-05-29T10:00:00",
+  "endDate": "2025-05-29T11:00:00",
   "location": "Meeting Room A",
   "participants": "John Doe,Jane Smith",
   "description": "Discuss project progress"
@@ -25,10 +25,22 @@ Example output:
 Only title and dates are required fields; others are optional. You need to generate them according to the user's requirements. However, if there is no location, for example, return an empty string for location rather than omitting the location field.
 `;
 
+interface RequestBody {
+  prompt: string;
+  currentValues: {
+    title?: string;
+    startDate?: string;
+    endDate?: string;
+    location?: string;
+    participants?: string;
+    description?: string;
+  };
+}
+
 export async function POST(req: Request) {
   try {
     if (!process.env.GROQ_API_KEY) {
-      throw new Error('GROQ_API_KEY未配置');
+      throw new Error('GROQ_API_KEY is not configured');
     }
 
     const origin = req.headers.get('origin') || '';
@@ -41,13 +53,21 @@ export async function POST(req: Request) {
       );
     }
 
-    const { prompt, currentValues } = await req.json();
+    const { prompt, currentValues } = await req.json() as RequestBody;
+    
+    if (!prompt) {
+      return NextResponse.json(
+        { error: 'Bad Request', message: 'Prompt is required' },
+        { status: 400 }
+      );
+    }
+
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
     const completion = await groq.chat.completions.create({
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: `当前值: ${JSON.stringify(currentValues)}\n用户提示: ${prompt}` }
+        { role: 'user', content: `Current values: ${JSON.stringify(currentValues)}\nUser prompt: ${prompt}` }
       ],
       model: 'llama-3.3-70b-versatile',
       temperature: 0.3,
@@ -55,15 +75,25 @@ export async function POST(req: Request) {
     });
 
     const result = completion.choices[0]?.message?.content;
-    if (!result) throw new Error('AI未返回有效内容');
+    if (!result) {
+      throw new Error('AI did not return valid content');
+    }
 
-    return NextResponse.json({ 
-      data: JSON.parse(result) 
-    });
+    try {
+      const parsedResult = JSON.parse(result);
+      return NextResponse.json({ data: parsedResult });
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', parseError);
+      throw new Error('Invalid AI response format');
+    }
 
   } catch (error: any) {
+    console.error('Schedule API Error:', error);
     return NextResponse.json(
-      { error: error.message },
+      { 
+        error: 'Schedule API Error',
+        message: error.message || 'An unexpected error occurred'
+      },
       { status: 500 }
     );
   }
