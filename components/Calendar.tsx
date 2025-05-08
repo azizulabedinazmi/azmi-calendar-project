@@ -43,7 +43,7 @@ export interface CalendarEvent {
   calendarId: string
 }
 
-export type Language = "en"
+export type Language = "en" | "zh"
 
 export default function Calendar() {
   const [openShareImmediately, setOpenShareImmediately] = useState(false)

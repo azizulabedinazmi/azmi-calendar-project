@@ -1,16 +1,17 @@
 "use client"
 
-import { useCalendar } from "@/components/context/CalendarContext"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Plus, ChevronDown, X } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/i18n"
-import { cn } from "@/lib/utils"
-import { CalendarIcon, ChevronDown, Plus, X } from "lucide-react"
-import { useState } from "react"
-import { toast } from "sonner"
+import { useCalendar } from "@/components/context/CalendarContext"
+import { CalendarIcon } from "lucide-react"
 
 interface SidebarProps {
   onCreateEvent: () => void
@@ -22,7 +23,7 @@ interface SidebarProps {
   onToggleCollapse?: () => void
 }
 
-export type Language = "en"
+export type Language = "en" | "zh"
 
 export interface CalendarCategory {
   id: string
