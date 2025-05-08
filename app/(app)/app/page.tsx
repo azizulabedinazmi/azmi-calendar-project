@@ -1,10 +1,9 @@
 "use client"
-import { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
-  const [isChinese, setIsChinese] = useState(false);
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -13,10 +12,6 @@ export default function Home() {
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
-  useEffect(() => {
-    const lang = navigator.language;
-    setIsChinese(lang.startsWith("zh"));
   }, []);
 
   if (isMobile) {
@@ -44,9 +39,7 @@ export default function Home() {
             margin: 0,
             lineHeight: 1.5
           }}>
-            {isChinese
-              ? "请使用电脑访问此页面，以获得最佳体验"
-              : "Please open this page on a computer for best experience"}
+            Please open this page on a computer for best experience
           </p>
         </div>
       </div>

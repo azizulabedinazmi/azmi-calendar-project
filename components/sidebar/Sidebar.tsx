@@ -1,29 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useCalendar } from "@/components/context/CalendarContext"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Plus, ChevronDown, X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { toast } from "sonner"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { translations } from "@/lib/i18n"
-import { useCalendar } from "@/components/context/CalendarContext"
-import { CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Calendar as CalendarIcon, ChevronDown, Plus, X } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 interface SidebarProps {
   onCreateEvent: () => void
   onDateSelect: (date: Date) => void
   onViewChange?: (view: string) => void
-  language?: Language
+  language?: "en"
   selectedDate?: Date
   isCollapsed?: boolean
   onToggleCollapse?: () => void
 }
 
-export type Language = "en" | "zh"
+export type Language = "en"
 
 export interface CalendarCategory {
   id: string
@@ -36,7 +35,7 @@ export default function Sidebar({
   onCreateEvent,
   onDateSelect,
   onViewChange,
-  language = "zh",
+  language = "en",
   selectedDate,
   isCollapsed = false,
   onToggleCollapse,
@@ -51,15 +50,15 @@ export default function Sidebar({
   const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null)
-  const t = translations[language || "zh"]
+  const t = translations.en // Always use English translations
 
   const deleteText = {
-    title: language === "zh" ? "确认删除" : "Delete confirmation",
-    description: language === "zh" ? "您确定要删除此分类吗？此操作无法撤销。" : "Are you sure you want to delete this category? This action cannot be undone.",
-    cancel: language === "zh" ? "取消" : "Cancel",
-    delete: language === "zh" ? "删除" : "Delete",
-    toastSuccess: language === "zh" ? "分类已删除" : "Category deleted",
-    toastDescription: language === "zh" ? "已成功删除分类" : "Category has been deleted successfully"
+    title: "Delete confirmation",
+    description: "Are you sure you want to delete this category? This action cannot be undone.",
+    cancel: "Cancel",
+    delete: "Delete",
+    toastSuccess: "Category deleted",
+    toastDescription: "Category has been deleted successfully"
   }
   
   if (selectedDate && (!localSelectedDate || selectedDate.getTime() !== localSelectedDate.getTime())) {
@@ -78,8 +77,8 @@ export default function Sidebar({
       setNewCategoryName("")
       setNewCategoryColor("bg-blue-500")
       setShowAddCategory(false)
-      toast(t.categoryAdded || "分类已添加", {
-        description: `${t.categoryAddedDesc || "已成功添加"} "${newCategoryName}" ${t.category || "分类"}`,
+      toast(t.categoryAdded || "Category added", {
+        description: `${t.categoryAddedDesc || "Successfully added"} "${newCategoryName}" ${t.category || "category"}`,
       })
     }
   }
@@ -90,15 +89,20 @@ export default function Sidebar({
   }
 
   const confirmDelete = () => {
-  if (categoryToDelete) {
-    removeCategoryFromContext(categoryToDelete)
-    toast(deleteText.toastSuccess, {
-      description: deleteText.toastDescription,
-    })
+    if (categoryToDelete) {
+      removeCategoryFromContext(categoryToDelete)
+      toast(deleteText.toastSuccess, {
+        description: deleteText.toastDescription,
+      })
+    }
+    setDeleteDialogOpen(false)
+    setCategoryToDelete(null)
   }
-  setDeleteDialogOpen(false)
-  setCategoryToDelete(null)
-}
+
+  // Add a check to ensure translations are loaded
+  if (!t || !t.oneCalendar) {
+    return null
+  }
 
   return (
     <div className={cn(
@@ -151,11 +155,11 @@ export default function Sidebar({
               <Input
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
-                placeholder={t.categoryName || "新日历名称"}
+                placeholder={t.categoryName || "New calendar name"}
                 className="text-sm"
               />
               <Button size="sm" onClick={addCategory}>
-                {t.addCategory || "添加"}
+                {t.addCategory || "Add"}
               </Button>
             </div>
           ) : (
@@ -198,45 +202,32 @@ export default function Sidebar({
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="category-name">{t.categoryName}</Label>
+              <Label>{t.categoryName}</Label>
               <Input
-                id="category-name"
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
-                placeholder="Name"
+                placeholder={t.categoryName}
               />
             </div>
             <div className="space-y-2">
               <Label>{t.color}</Label>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "blue-500",
-                  "green-500",
-                  "purple-500",
-                  "yellow-500",
-                  "red-500",
-                  "pink-500",
-                  "indigo-500",
-                  "orange-500",
-                  "teal-500",
-                ].map((color) => (
-                  <div
+              <div className="grid grid-cols-4 gap-2">
+                {["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500", "bg-pink-500", "bg-indigo-500", "bg-gray-500"].map((color) => (
+                  <button
                     key={color}
                     className={cn(
-                      `bg-${color} w-6 h-6 rounded-full cursor-pointer`,
-                      newCategoryColor === `bg-${color}` ? "ring-2 ring-offset-2 ring-black" : "",
+                      "h-8 w-8 rounded-full",
+                      color,
+                      newCategoryColor === color && "ring-2 ring-offset-2 ring-black"
                     )}
-                    onClick={() => setNewCategoryColor(`bg-${color}`)}
+                    onClick={() => setNewCategoryColor(color)}
                   />
                 ))}
               </div>
             </div>
-            <DialogFooter>
-            <Button onClick={addCategory} disabled={!newCategoryName}>
-              <Plus className="mr-2 h-4 w-4" />
+            <Button onClick={addCategory} className="w-full">
               {t.addCategory}
             </Button>
-            </DialogFooter>
           </div>
         </DialogContent>
       </Dialog>
