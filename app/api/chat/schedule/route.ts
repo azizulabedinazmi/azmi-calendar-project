@@ -1,28 +1,28 @@
-import { NextResponse } from 'next/server';
 import { Groq } from 'groq-sdk';
+import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
 const SYSTEM_PROMPT = `
-你是一个智能日程助手，专门帮助用户创建和优化日历事件。请根据用户提示生成合适的日程安排。
+You are an intelligent scheduling assistant, specializing in helping users create and optimize calendar events. Please generate appropriate scheduling based on user prompts.
 
-输出要求：
-1. 必须返回纯JSON格式，不带任何Markdown符号或额外解释
-2. 只包含用户提示中明确提到的或可以合理推断出的字段
-3. 时间格式必须为ISO字符串(YYYY-MM-DDTHH:mm)
-4. 参与者格式为逗号分隔的字符串
+Output requirements:
+1. Must return pure JSON format, without any Markdown symbols or additional explanations
+2. Only include fields explicitly mentioned in the user prompt or that can be reasonably inferred
+3. Time format must be ISO string (YYYY-MM-DDTHH:mm)
+4. Participants format should be comma-separated strings
 
-示例输出：
+Example output:
 {
-  "title": "团队会议",
+  "title": "Team Meeting",
   "startDate": "2025-04-29T10:00:00",
   "endDate": "2025-04-29T11:00:00",
-  "location": "会议室A",
-  "participants": "张三,李四",
-  "description": "讨论项目进度"
+  "location": "Meeting Room A",
+  "participants": "John Doe,Jane Smith",
+  "description": "Discuss project progress"
 }
 
-只有 title、日期 是必填的，其他都是可选项，你需要依据用户的要求要生成，但是比如说没有 location，那 location 就返回一个空字符串而不是不输出 location
+Only title and dates are required fields; others are optional. You need to generate them according to the user's requirements. However, if there is no location, for example, return an empty string for location rather than omitting the location field.
 `;
 
 export async function POST(req: Request) {
