@@ -1,19 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { analyzeTimeUsage, type TimeAnalytics } from "@/lib/time-analytics"
-import { useLocalStorage } from "@/hooks/useLocalStorage"
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, X } from "lucide-react"
+import { useLocalStorage } from "@/hooks/useLocalStorage"
+import { translations, useLanguage } from "@/lib/i18n"
+import { analyzeTimeUsage, type TimeAnalytics } from "@/lib/time-analytics"
 import { cn } from "@/lib/utils"
+import { Plus, X } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import type { CalendarEvent } from "../Calendar"
 import type { CalendarCategory } from "../Sidebar"
-import { translations, useLanguage } from "@/lib/i18n"
 
 interface TimeAnalyticsProps {
   events: CalendarEvent[]
@@ -147,6 +147,7 @@ export default function TimeAnalyticsComponent({ events, calendars = [] }: TimeA
             <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{t.manageCategories}</DialogTitle>
+                <DialogDescription>{t.manageCategoriesDesc}</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">

@@ -130,14 +130,12 @@ export const translations = {
     basicFeatures: "Basic Features",
     importExportFeatures: "Import & Export",
     createEventGuide: "Create Event",
-    createEventDesc:
-      'Click the "Create Event" button at the top of the sidebar, or directly click on a time slot in the calendar to create a new event.',
+    createEventDesc: "Create a new event in your calendar",
     switchViewGuide: "Switch View",
     switchViewDesc:
       "Use the dropdown menu in the top navigation bar to switch between day, week, month, and analytics views.",
     manageCalendarCategoriesGuide: "Manage Calendar Categories",
-    manageCalendarCategoriesDesc:
-      'In the "My Calendars" section of the sidebar, you can add, edit, and delete different calendar categories.',
+    manageCalendarCategoriesDesc: "Create and manage categories to organize your events",
     setReminderGuide: "Set Reminders",
     setReminderDesc:
       "When creating or editing an event, you can set a reminder time, and the system will notify you before the event starts.",
@@ -239,6 +237,7 @@ export const translations = {
     qrCodeDownloaded: "QR Code Downloaded",
     savedToDevice: "Saved to your device",
     scanQRCodeToView: "Scan this QR code to view the event",
+    updateEventDesc: "Update an existing event in your calendar",
   },
   zh: {
     calendar: "日历",
@@ -363,11 +362,11 @@ export const translations = {
     basicFeatures: "基础功能",
     importExportFeatures: "导入与导出",
     createEventGuide: "创建事件",
-    createEventDesc: '点击侧边栏顶部的"创建日程"按钮，或直接点击日历上的时间段来创建新事件。',
+    createEventDesc: "在您的日历中创建新事件",
     switchViewGuide: "切换视图",
     switchViewDesc: "使用顶部导航栏的下拉菜单在日、周、月和分析视图之间切换。",
     manageCalendarCategoriesGuide: "管理日历分类",
-    manageCalendarCategoriesDesc: '在侧边栏的"我的日历"部分，您可以添加、编辑和删除不同的日历分类。',
+    manageCalendarCategoriesDesc: "创建和管理分类以组织您的事件",
     setReminderGuide: "设置提醒",
     setReminderDesc: "创建或编辑事件时，您可以设置提醒时间，系统会在事件开始前通知您。",
     importExportGuide: "导入与导出日历数据",
@@ -463,6 +462,7 @@ export const translations = {
     qrCodeDownloaded: "二维码已下载",
     savedToDevice: "已保存到您的设备",
     scanQRCodeToView: "扫描此二维码可立即查看日程",
+    updateEventDesc: "更新日历中的现有事件",
   },
 }
 

@@ -2,7 +2,7 @@
 
 import { useLocalStorage } from "@/hooks/useLocalStorage"
 import type React from "react"
-import { createContext, useContext } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 export interface CalendarCategory {
   id: string
@@ -39,48 +39,55 @@ interface CalendarContextType {
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined)
 
-// 默认日历分类
+// Default calendar categories
 const defaultCalendars: CalendarCategory[] = [
   {
     id: "work",
-    name: "工作",
+    name: "Work",
     color: "bg-blue-500",
     keywords: [],
   },
   {
     id: "personal",
-    name: "个人",
+    name: "Personal",
     color: "bg-green-500",
     keywords: [],
   },
 ]
 
 export function CalendarProvider({ children }: { children: React.ReactNode }) {
-  // 修改这里，使用空数组作为默认值，不自动创建分类
-  const [calendars, setCalendars] = useLocalStorage<CalendarCategory[]>("calendar-categories", [])
-
+  const [isClient, setIsClient] = useState(false)
+  const [calendars, setCalendars] = useLocalStorage<CalendarCategory[]>("calendar-categories", defaultCalendars)
   const [events, setEvents] = useLocalStorage<CalendarEvent[]>("calendar-events", [])
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return null
+  }
 
   const addCategory = (category: CalendarCategory) => {
     setCalendars([...calendars, category])
   }
 
   const removeCategory = (id: string) => {
-    setCalendars(calendars.filter((cal) => cal.id !== id))
+    setCalendars(calendars.filter((cal: CalendarCategory) => cal.id !== id))
   }
 
   const updateCategory = (id: string, category: Partial<CalendarCategory>) => {
-    setCalendars(calendars.map((cal) => (cal.id === id ? { ...cal, ...category } : cal)))
+    setCalendars(calendars.map((cal: CalendarCategory) => (cal.id === id ? { ...cal, ...category } : cal)))
   }
 
   const addEvent = (newEvent: CalendarEvent) => {
-    setEvents((prevEvents) => {
-      // 检查事件是否已存在
-      const eventExists = prevEvents.some((event) => event.id === newEvent.id)
+    setEvents((prevEvents: CalendarEvent[]) => {
+      // Check if event already exists
+      const eventExists = prevEvents.some((event: CalendarEvent) => event.id === newEvent.id)
 
-      // 如果已存在，替换它；否则添加新事件
+      // If exists, replace it; otherwise add new event
       if (eventExists) {
-        return prevEvents.map((event) => (event.id === newEvent.id ? newEvent : event))
+        return prevEvents.map((event: CalendarEvent) => (event.id === newEvent.id ? newEvent : event))
       } else {
         return [...prevEvents, newEvent]
       }
