@@ -1,6 +1,6 @@
 "use client"
-import { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
