@@ -49,7 +49,7 @@ export async function POST(req: Request) {
 
     const chatCompletion = await groq.chat.completions.create({
       messages,
-      model: "gemma2-9b-it",
+      model: "llama-3.3-70b-versatile",
       temperature: 0.7,
       max_tokens: 1024,
       stream: true
@@ -62,7 +62,9 @@ export async function POST(req: Request) {
         try {
           for await (const chunk of chatCompletion) {
             const content = chunk.choices[0]?.delta?.content || '';
-            controller.enqueue(encoder.encode(content));
+            if (content) {
+              controller.enqueue(encoder.encode(content));
+            }
           }
           controller.close();
         } catch (error) {
@@ -77,6 +79,9 @@ export async function POST(req: Request) {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
     });
 
@@ -90,4 +95,26 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function OPTIONS(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://azmi-calendar-project.vercel.app',
+    process.env.NEXT_PUBLIC_BASE_URL
+  ].filter(Boolean);
+
+  if (!allowedOrigins.includes(origin)) {
+    return new Response(null, { status: 403 });
+  }
+
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }

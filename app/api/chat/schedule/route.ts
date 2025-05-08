@@ -87,7 +87,16 @@ export async function POST(req: Request) {
 
     try {
       const parsedResult = JSON.parse(result);
-      return NextResponse.json({ data: parsedResult });
+      return NextResponse.json(
+        { data: parsedResult },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': origin,
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        }
+      );
     } catch (parseError) {
       console.error('Failed to parse AI response:', parseError);
       throw new Error('Invalid AI response format');
@@ -103,4 +112,26 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function OPTIONS(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://azmi-calendar-project.vercel.app',
+    process.env.NEXT_PUBLIC_BASE_URL
+  ].filter(Boolean);
+
+  if (!allowedOrigins.includes(origin)) {
+    return new Response(null, { status: 403 });
+  }
+
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
