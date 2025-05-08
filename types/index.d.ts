@@ -1,73 +1,3 @@
-declare module "react" {
-  export type FC<P = {}> = React.FunctionComponent<P>
-  export type ReactNode = React.ReactNode
-  export type SVGProps<T> = React.SVGProps<T>
-  export interface FunctionComponent<P = {}> {
-    (props: P & { children?: ReactNode }): ReactElement<any, any> | null
-  }
-  export interface ReactElement<P = any, T extends string | JSXElementConstructor<any> = string | JSXElementConstructor<any>> {
-    type: T
-    props: P
-    key: Key | null
-  }
-  export type Key = string | number
-  export type JSXElementConstructor<P> = ((props: P) => ReactElement<any, any> | null) | (new (props: P) => Component<any, any>)
-  export class Component<P = {}, S = {}> {
-    constructor(props: P)
-    props: Readonly<P>
-    state: Readonly<S>
-    setState(state: S | ((prevState: S) => S)): void
-    render(): ReactElement<any, any> | null
-  }
-  export function useState<T>(initialState: T | (() => T)): [T, (newState: T | ((prevState: T) => T)) => void]
-  export function useEffect(effect: () => void | (() => void), deps?: any[]): void
-
-  export interface DetailedHTMLProps<E extends HTMLAttributes<T>, T> {
-    key?: Key | null | undefined
-    ref?: LegacyRef<T> | undefined
-  } & E
-
-  export interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    className?: string
-    id?: string
-    style?: CSSProperties
-  }
-
-  export interface AriaAttributes {
-    "aria-label"?: string
-  }
-
-  export interface DOMAttributes<T> {
-    children?: ReactNode
-    dangerouslySetInnerHTML?: {
-      __html: string
-    }
-    onClick?: (event: MouseEvent<T>) => void
-  }
-
-  export interface CSSProperties {
-    [key: string]: string | number | undefined
-  }
-
-  export type LegacyRef<T> = string | Ref<T>
-
-  export type Ref<T> = { current: T | null } | ((instance: T | null) => void)
-
-  export interface MouseEvent<T> extends Event {
-    currentTarget: EventTarget & T
-  }
-
-  export interface Event {
-    preventDefault(): void
-    stopPropagation(): void
-  }
-
-  export interface EventTarget {
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void
-  }
-}
-
 declare module "lucide-react" {
   import { FC, SVGProps } from "react"
   export interface IconProps extends SVGProps<SVGSVGElement> {
@@ -108,17 +38,6 @@ declare module "@/lib/i18n" {
       keyboardShortcutsDescription: string
       importExport: string
       importExportDescription: string
-    }
-  }
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
-      h3: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>
-      p: React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>
-      section: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
     }
   }
 } 
