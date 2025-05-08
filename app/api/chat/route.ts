@@ -18,10 +18,16 @@ export async function POST(req: Request) {
       throw new Error('GROQ_API_KEY is not configured');
     }
 
+    // Allow requests from both localhost and the deployed domain
     const origin = req.headers.get('origin') || '';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
-    
-    if (origin !== baseUrl) {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://azmi-calendar-project.vercel.app',
+      process.env.NEXT_PUBLIC_BASE_URL
+    ].filter(Boolean);
+
+    if (!allowedOrigins.includes(origin)) {
+      console.warn('Invalid origin:', origin);
       return NextResponse.json(
         { error: 'Forbidden', message: 'Invalid origin' },
         { status: 403 }
