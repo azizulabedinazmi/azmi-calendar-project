@@ -19,15 +19,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import DayView from "@/components/view/DayView"
 import MonthView from "@/components/view/MonthView"
 import WeekView from "@/components/view/WeekView"
-import { useLanguage } from "@/hooks/useLanguage"
 import { useLocalStorage } from "@/hooks/useLocalStorage"
-import { translations } from "@/lib/i18n"
+import { translations, useLanguage } from "@/lib/i18n"
 import { checkPendingNotifications, clearAllNotificationTimers } from "@/lib/notifications"
 import { addDays, subDays } from "date-fns"
 import { ChevronLeft, ChevronRight, PanelLeft, Search } from 'lucide-react'
 import { Suspense, useEffect, useRef, useState } from "react"
 
-export type ViewType = "day" | "week" | "month" | "analytics"
+type ViewType = "day" | "week" | "month" | "analytics"
 
 export interface CalendarEvent {
   id: string
@@ -204,14 +203,16 @@ export default function Calendar() {
   }
 
   const handleEventAdd = (event: CalendarEvent) => {
+    // Make sure we're adding a new event with the correct ID
     const newEvent = {
       ...event,
       id: event.id || Date.now().toString() + Math.random().toString(36).substring(2, 9),
     }
+
     setEvents((prevEvents: CalendarEvent[]) => [...prevEvents, newEvent])
     setEventDialogOpen(false)
     setSelectedEvent(null)
-    setQuickCreateStartTime(null)
+    setQuickCreateStartTime(null) // Reset the quick create time
   }
 
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
@@ -321,8 +322,8 @@ const handleShare = (event: CalendarEvent) => {
       {/* <div className="w-80 border-r bg-background"> */}
         <Sidebar
           onCreateEvent={() => {
-            setSelectedEvent(null)
-            setQuickCreateStartTime(new Date())
+            setSelectedEvent(null) // 确保是创建新事件
+            setQuickCreateStartTime(new Date()) // 使用当前时间
             setEventDialogOpen(true)
           }}
           onDateSelect={handleDateSelect}

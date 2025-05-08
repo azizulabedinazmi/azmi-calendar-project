@@ -21,8 +21,6 @@ declare module "react" {
   }
   export function useState<T>(initialState: T | (() => T)): [T, (newState: T | ((prevState: T) => T)) => void]
   export function useEffect(effect: () => void | (() => void), deps?: any[]): void
-  export function useRef<T>(initialValue: T): { current: T }
-  export const Suspense: FC<{ children: ReactNode }>
 
   export interface DetailedHTMLProps<E extends HTMLAttributes<T>, T> {
     key?: Key | null | undefined
@@ -83,15 +81,6 @@ declare module "lucide-react" {
   export const SunIcon: FC<IconProps>
   export const KeyboardIcon: FC<IconProps>
   export const ImportIcon: FC<IconProps>
-  export const ChevronLeft: FC<IconProps>
-  export const ChevronRight: FC<IconProps>
-  export const PanelLeft: FC<IconProps>
-  export const Search: FC<IconProps>
-}
-
-declare module "date-fns" {
-  export function addDays(date: Date, amount: number): Date
-  export function subDays(date: Date, amount: number): Date
 }
 
 declare module "@/hooks/useLanguage" {
@@ -119,12 +108,6 @@ declare module "@/lib/i18n" {
       keyboardShortcutsDescription: string
       importExport: string
       importExportDescription: string
-      searchEventsPlaceholder: string
-      day: string
-      week: string
-      month: string
-      todayButton: string
-      [key: string]: string
     }
   }
 }
@@ -136,9 +119,6 @@ declare global {
       h3: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>
       p: React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>
       section: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
-      header: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
-      span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>
-      input: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
     }
   }
 } 
