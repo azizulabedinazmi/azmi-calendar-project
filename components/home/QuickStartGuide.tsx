@@ -53,11 +53,6 @@ const QuickStartGuide: FC = () => {
         setHasSeenGuide(true)
     }
 
-    // Add a check to ensure translations are loaded
-    if (!t || !t.welcomeToOneCalendar) {
-        return null
-    }
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="max-w-5xl">
