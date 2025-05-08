@@ -223,7 +223,16 @@ export const translations = {
     downloadQRCode: "Download QR Code",
     qrCodeDownloaded: "QR Code Downloaded",
     savedToDevice: "Saved to your device",
-    scanQRCodeToView: "Scan this QR code to view the event"
+    scanQRCodeToView: "Scan this QR code to view the event",
+    cloudSync: "Cloud Sync",
+    cloudSyncDescription: "Sync your calendar across all your devices",
+    easySharing: "Easy Sharing",
+    easySharingDescription: "Share events with friends and colleagues",
+    weatherIntegration: "Weather Integration",
+    weatherIntegrationDescription: "Get weather forecasts for your events",
+    keyboardShortcuts: "Keyboard Shortcuts",
+    keyboardShortcutsDescription: "Use keyboard shortcuts for faster navigation",
+    importExportDescription: "Import and export your calendar data in various formats"
   }
 }
 
