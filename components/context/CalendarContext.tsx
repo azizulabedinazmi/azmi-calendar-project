@@ -1,8 +1,8 @@
 "use client"
 
+import { useLocalStorage } from "@/hooks/useLocalStorage"
 import type React from "react"
 import { createContext, useContext } from "react"
-import { useLocalStorage } from "@/hooks/useLocalStorage"
 
 export interface CalendarCategory {
   id: string
