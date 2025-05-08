@@ -1,19 +1,19 @@
 "use client"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { translations, useLanguage } from "@/lib/i18n"
-import { AlertCircle, CalendarIcon, Download, ExternalLink, Upload } from "lucide-react"
-import { useEffect, useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
+import { Download, Upload, CalendarIcon, ExternalLink, AlertCircle } from "lucide-react"
 import type { CalendarEvent } from "../Calendar"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { translations, useLanguage } from "@/lib/i18n"
 
 interface ImportExportProps {
   events: CalendarEvent[]
@@ -609,7 +609,7 @@ END:VEVENT
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center space-y-2">
                   <Download className="h-8 w-8 text-green-500" />
-                  <h3 className="font-medium">{t.backupDataTitle}</h3>
+                  <h3 className="font-medium">{t.backupData}</h3>
                   <p className="text-sm text-muted-foreground">{t.backupDataDesc}</p>
                 </div>
               </CardContent>
@@ -712,7 +712,7 @@ END:VEVENT
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button variant="outline" onClick={() => setImportDialogOpen(false)}>
-              {t.cancelButton}
+              {t.cancel}
             </Button>
             <Button onClick={handleImport} disabled={isLoading}>
               {isLoading ? t.importing : t.import}
@@ -771,7 +771,7 @@ END:VEVENT
 
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setExportDialogOpen(false)}>
-              {t.cancelButton}
+              {t.cancel}
             </Button>
             <Button onClick={handleExport} disabled={isLoading}>
               {isLoading ? t.exporting : t.export}

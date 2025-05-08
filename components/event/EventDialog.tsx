@@ -1,20 +1,20 @@
 "use client"
 
-import { useCalendar } from "@/components/context/CalendarContext"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { translations, type Language } from "@/lib/i18n"
-import { cn } from "@/lib/utils"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
-import { ArrowRight } from "lucide-react"
-import { useEffect, useState } from "react"
 import type { CalendarEvent } from "../Calendar"
+import { cn } from "@/lib/utils"
+import { translations, type Language } from "@/lib/i18n"
+import { useCalendar } from "@/components/context/CalendarContext"
+import { ArrowRight } from "lucide-react"
 
 const colorOptions = [
   { value: "bg-blue-500", label: "Blue" },
@@ -414,7 +414,7 @@ export default function EventDialog({
             )}
             <div className="flex space-x-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                {t.cancelButton}
+                {t.cancel}
               </Button>
               <Button type="submit">{event ? t.update : t.save}</Button>
             </div>

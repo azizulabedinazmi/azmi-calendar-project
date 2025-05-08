@@ -106,7 +106,7 @@ export default function Calendar() {
         case "/":
           e.preventDefault()
           // Focus the search input
-          const searchInput = document.querySelector('input[placeholder="' + t.searchEventsPlaceholder + '"]') as HTMLInputElement
+          const searchInput = document.querySelector('input[placeholder="' + t.searchEvents + '"]') as HTMLInputElement
           if (searchInput) {
             searchInput.focus()
           }
@@ -143,7 +143,7 @@ export default function Calendar() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [enableShortcuts, t.searchEventsPlaceholder]) // Make sure enableShortcuts is in the dependency array
+  }, [enableShortcuts, t.searchEvents]) // Make sure enableShortcuts is in the dependency array
 
   const handleDateSelect = (date: Date) => {
     setDate(date)
@@ -338,7 +338,7 @@ const handleShare = (event: CalendarEvent) => {
               <PanelLeft />
             </Button>
             <Button variant="outline" size="sm" onClick={handleTodayClick}>
-              {t.todayButton || "今天"}
+              {t.today || "今天"}
             </Button>
           </div>
 
@@ -379,7 +379,7 @@ const handleShare = (event: CalendarEvent) => {
               <Search className="h-5 w-5 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
                 type="text"
-                placeholder={t.searchEventsPlaceholder}
+                placeholder={t.searchEvents}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9 pr-4 py-2 w-40"

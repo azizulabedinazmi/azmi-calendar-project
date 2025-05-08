@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-export type Language = "en"
+export type Language = "en" | "zh"
 
 export const translations = {
   en: {
@@ -15,7 +15,7 @@ export const translations = {
     week: "Week",
     month: "Month",
     analytics: "Analytics",
-    searchEventsPlaceholder: "Search Events",
+    searchEvents: "Search events",
     title: "Title",
     startTime: "Start Time",
     endTime: "End Time",
@@ -28,7 +28,7 @@ export const translations = {
     color: "Color",
     notification: "Notification",
     save: "Save",
-    cancelButton: "Cancel",
+    cancel: "Cancel",
     delete: "Delete",
     update: "Update",
     minutesBefore: "{minutes} minutes before",
@@ -55,7 +55,7 @@ export const translations = {
     notificationSound: "Notification Sound",
     telegramSound: "Telegram",
     telegramSfxSound: "Telegram SFX",
-    todayButton: "Today",
+    today: "Today",
     // Analytics translations
     timeAnalytics: "Time Analytics",
     timeAnalyticsDesc: "Analyze how you spend your time",
@@ -65,8 +65,8 @@ export const translations = {
     mostProductiveDay: "Most Productive Day",
     mostProductiveHour: "Most Productive Hour",
     noData: "No data",
-    weekView: "Week",
-    monthView: "Month",
+    week: "Week",
+    month: "Month",
     year: "Year",
     thisWeek: "This Week",
     thisMonth: "This Month",
@@ -106,13 +106,15 @@ export const translations = {
     importError: "Error importing calendar data: {error}",
     exportError: "Error exporting calendar data",
     googleCalendarGuide: "Google Calendar Import Guide",
-    googleCalendarGuideText: "When importing from Google Calendar, first select 'Settings > Import & Export > Export' in Google Calendar, download the .ics file and import it here. Do not use the 'Get Public URL' option as that is for sharing, not exporting.",
+    googleCalendarGuideText:
+      "When importing from Google Calendar, first select 'Settings > Import & Export > Export' in Google Calendar, download the .ics file and import it here. Do not use the 'Get Public URL' option as that is for sharing, not exporting.",
     iCalendarFormat: "iCalendar Format",
-    backupDataTitle: "Backup Data",
+    backupData: "Backup Your Data",
     crossPlatformSync: "Cross-Platform Sync",
     iCalendarFormatDesc: "Standard format compatible with Google Calendar, Outlook, and Apple Calendar.",
     backupDataDesc: "Export your calendar data as a backup to ensure you don't lose important events.",
-    crossPlatformSyncDesc: "Sync your calendar data across different devices and applications to maintain consistent scheduling.",
+    crossPlatformSyncDesc:
+      "Sync your calendar data across different devices and applications to maintain consistent scheduling.",
     importExportTips: "Import & Export Tips",
     tip1: "Exported iCalendar (.ics) files can be directly imported into most calendar applications",
     tip2: "CSV format is suitable for data exchange with spreadsheet applications",
@@ -123,23 +125,30 @@ export const translations = {
     copy: "Copy",
     eventDuplicated: "Event duplicated",
     welcomeToOneCalendar: "Welcome to One Calendar",
-    powerfulCalendarApp: "This is a powerful calendar application that helps you manage your schedule and import/export calendar data.",
+    powerfulCalendarApp:
+      "This is a powerful calendar application that helps you manage your schedule and import/export calendar data.",
     basicFeatures: "Basic Features",
     importExportFeatures: "Import & Export",
     createEventGuide: "Create Event",
-    createEventDesc: 'Click the "Create Event" button at the top of the sidebar, or directly click on a time slot in the calendar to create a new event.',
+    createEventDesc:
+      'Click the "Create Event" button at the top of the sidebar, or directly click on a time slot in the calendar to create a new event.',
     switchViewGuide: "Switch View",
-    switchViewDesc: "Use the dropdown menu in the top navigation bar to switch between day, week, month, and analytics views.",
+    switchViewDesc:
+      "Use the dropdown menu in the top navigation bar to switch between day, week, month, and analytics views.",
     manageCalendarCategoriesGuide: "Manage Calendar Categories",
-    manageCalendarCategoriesDesc: 'In the "My Calendars" section of the sidebar, you can add, edit, and delete different calendar categories.',
+    manageCalendarCategoriesDesc:
+      'In the "My Calendars" section of the sidebar, you can add, edit, and delete different calendar categories.',
     setReminderGuide: "Set Reminders",
-    setReminderDesc: "When creating or editing an event, you can set a reminder time, and the system will notify you before the event starts.",
+    setReminderDesc:
+      "When creating or editing an event, you can set a reminder time, and the system will notify you before the event starts.",
     importExportGuide: "Import & Export Calendar Data",
-    importExportDesc: "Exchange data with other calendar applications, import or export your calendar events in various formats.",
+    importExportDesc:
+      "Exchange data with other calendar applications, import or export your calendar events in various formats.",
     mainFeatures: "Main features",
     importExportFeaturesList1: "Import events from iCalendar (.ics), JSON, and CSV files",
     importExportFeaturesList2: "Export your calendar data in different formats for backup or sharing",
-    importExportFeaturesList3: "Sync with other calendar applications like Google Calendar, Outlook, and Apple Calendar",
+    importExportFeaturesList3:
+      "Sync with other calendar applications like Google Calendar, Outlook, and Apple Calendar",
     getStarted: "Get Started",
     nextStep: "Next",
     previousStep: "Previous",
@@ -156,21 +165,25 @@ export const translations = {
     defaultView: "Default View",
     newEvent: "New Event",
     searchEvents: "Search Events",
+    today: "Today",
     dayView: "Day View",
     weekView: "Week View",
     monthView: "Month View",
     nextPeriod: "Next Period",
     previousPeriod: "Previous Period",
     userProfile: "User Profile",
-    restoreDataTitle: "Restore Data",
+    backupData: "Backup Data",
+    restoreData: "Restore Data",
     backupDescription: "Create a backup of your calendar data. You'll need this password to restore your data later.",
     restoreDescription: "Restore your calendar data from a previous backup. This will replace your current data.",
     password: "Password",
     confirmPassword: "Confirm Password",
     enterPassword: "Enter a password",
     confirmYourPassword: "Confirm your password",
-    passwordRequirements: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
-    passwordRequirementsHint: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+    passwordRequirements:
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+    passwordRequirementsHint:
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
     passwordsDoNotMatch: "Passwords do not match",
     passwordRequired: "Password is required",
     backupSuccessful: "Backup Successful",
@@ -181,15 +194,17 @@ export const translations = {
     restoreFailed: "Restore Failed",
     backupNotFound: "Backup not found. Please check your password.",
     unknownError: "An unknown error occurred",
-    backupButton: "Backup",
-    restoreButton: "Restore",
+    cancel: "Cancel",
+    backup: "Backup",
+    restore: "Restore",
     processing: "Processing...",
     enterBackupPassword: "Enter your backup password",
     restoreWarning: "Warning: This will replace all your current data with the backup data.",
     replaceExistingData: "Replace existing data?",
     mergeData: "Merge with existing data",
     autoBackupTitle: "Enable Auto-Backup?",
-    autoBackupDescription: "Would you like to automatically backup your data with this password whenever changes are made?",
+    autoBackupDescription:
+      "Would you like to automatically backup your data with this password whenever changes are made?",
     enableAutoBackup: "Enable Auto-Backup",
     autoBackupEnabled: "Auto-Backup Enabled",
     autoBackupDisabled: "Auto-Backup Disabled",
@@ -223,31 +238,52 @@ export const translations = {
     downloadQRCode: "Download QR Code",
     qrCodeDownloaded: "QR Code Downloaded",
     savedToDevice: "Saved to your device",
-    scanQRCodeToView: "Scan this QR code to view the event"
-  }
+    scanQRCodeToView: "Scan this QR code to view the event",
+  },
 }
 
-// Detect system language
+// 检测系统语言
 function detectSystemLanguage(): Language {
-  return "en" // Always return English
+  if (typeof window === "undefined") {
+    return "en" // Default to English
+  }
+
+  // Get browser language
+  const browserLang = navigator.language.toLowerCase()
+
+  // 如果浏览器语言以zh开头（如zh-CN, zh-TW等），返回中文
+  if (browserLang.startsWith("zh")) {
+    return "zh"
+  }
+
+  // 否则返回英文
+  return "en"
 }
 
 export function useLanguage(): [Language, (lang: Language) => void] {
-  const [language, setLanguageState] = useState<Language>("en")
+  const [language, setLanguageState] = useState<Language>("zh") // 默认为中文
 
-  // Read language setting from localStorage
+  // 从localStorage读取语言设置
   const readLanguageFromStorage = () => {
-    return "en" // Always return English
+    const storedLanguage = localStorage.getItem("preferred-language")
+    if (storedLanguage === "en" || storedLanguage === "zh") {
+      return storedLanguage as Language
+    }
+    return detectSystemLanguage()
   }
 
   useEffect(() => {
-    // Initialize with English
-    setLanguageState("en")
+    // 初始化时读取语言设置
+    const storedLanguage = readLanguageFromStorage()
+    setLanguageState(storedLanguage)
 
-    // Create an event listener for localStorage changes
+    // 创建一个事件监听器，当localStorage变化时触发
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "preferred-language") {
-        setLanguageState("en")
+        const newLanguage = e.newValue as Language
+        if (newLanguage === "en" || newLanguage === "zh") {
+          setLanguageState(newLanguage)
+        }
       }
     }
 
@@ -260,7 +296,7 @@ export function useLanguage(): [Language, (lang: Language) => void] {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
     localStorage.setItem("preferred-language", lang)
-    // Trigger a custom event to notify other components of language change
+    // 触发一个自定义事件，通知其他组件语言已更改
     window.dispatchEvent(new Event("languagechange"))
   }
 
