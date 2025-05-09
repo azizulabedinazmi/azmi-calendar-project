@@ -55,10 +55,9 @@ export default function UserProfileButton() {
   }
 
   const handleSignOut = () => {
-    toast.success("Signed Out", {
-      description: "You have been signed out.",
+    toast(language === "zh" ? "已登出" : "Signed Out", {
+      description: language === "zh" ? "您已成功退出登录" : "You have been signed out",
     });
-    router.push("/");
   };
 
   // 监听用户登录状态变化
@@ -144,7 +143,7 @@ const enableAutoBackup = () => {
     setIsAutoBackupEnabled(true);
     localStorage.setItem("auto-backup-enabled", "true"); // 明确设置为 "true"
     localStorage.setItem("auto-backup-id", clerkUserId);
-    toast(anguage === "zh" ? "自动备份已启用" : "Auto-Backup Enabled", {
+    toast(language === "zh" ? "自动备份已启用" : "Auto-Backup Enabled", {
       description: language === "zh" 
         ? "您的数据将在每次更改时自动备份。" 
         : "Your data will be automatically backed up on changes.",
@@ -353,14 +352,9 @@ return (
                  className="cursor-pointer"
               >
                 <FolderSync className="mr-2 h-4 w-4" />
-                "Sync data"
+                {language === "zh" ? "同步数据" : "Sync data"}
               </DropdownMenuItem>
-              <SignOutButton signOutCallback={() => {
-                toast.success("Signed Out", {
-                  description: "You have been signed out.",
-                });
-                router.push("/");
-              }}>
+              <SignOutButton signOutCallback={handleSignOut}>
                 <DropdownMenuItem className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   {language === "zh" ? "退出登录" : "Sign Out"}
