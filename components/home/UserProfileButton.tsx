@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react"
-import { User, Upload, Download, X, Check, LogOut, CircleUser, FolderSync, CloudUpload } from 'lucide-react'
+import { useCalendar } from "@/components/context/CalendarContext"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,15 +9,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
-import { useCalendar } from "@/components/context/CalendarContext"
 import { translations, useLanguage } from "@/lib/i18n"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useUser, SignIn, SignUp, SignOutButton, UserProfile, useClerk } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
+import { SignOutButton, UserProfile, useClerk, useUser } from "@clerk/nextjs"
+import { CircleUser, CloudUpload, FolderSync, LogOut, User, X } from 'lucide-react'
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 export default function UserProfileButton() {
   const [language] = useLanguage()
@@ -58,9 +55,10 @@ export default function UserProfileButton() {
   }
 
   const handleSignOut = () => {
-    toast(language === "zh" ? "已登出" : "Signed Out", {
-      description: language === "zh" ? "您已成功退出登录" : "You have been signed out",
+    toast.success("Signed Out", {
+      description: "You have been signed out.",
     });
+    router.push("/");
   };
 
   // 监听用户登录状态变化
@@ -355,12 +353,12 @@ return (
                  className="cursor-pointer"
               >
                 <FolderSync className="mr-2 h-4 w-4" />
-                {language === "zh" ? "同步数据" : "Sync data"}
+                "Sync data"
               </DropdownMenuItem>
               <SignOutButton signOutCallback={handleSignOut}>
                 <DropdownMenuItem className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
-                  {language === "zh" ? "退出登录" : "Sign Out"}
+                  "Sign Out"
                 </DropdownMenuItem>
               </SignOutButton>
             </>
