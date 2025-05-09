@@ -1,4 +1,4 @@
-import { put, list, del } from "@vercel/blob";
+import { del, list, put } from "@vercel/blob";
 import { type NextRequest, NextResponse } from "next/server";
 
 // 确保备份文件路径一致
