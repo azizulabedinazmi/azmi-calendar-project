@@ -355,10 +355,15 @@ return (
                 <FolderSync className="mr-2 h-4 w-4" />
                 "Sync data"
               </DropdownMenuItem>
-              <SignOutButton signOutCallback={handleSignOut}>
+              <SignOutButton signOutCallback={() => {
+                toast.success("Signed Out", {
+                  description: "You have been signed out.",
+                });
+                router.push("/");
+              }}>
                 <DropdownMenuItem className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
-                  "Sign Out"
+                  {language === "zh" ? "退出登录" : "Sign Out"}
                 </DropdownMenuItem>
               </SignOutButton>
             </>
