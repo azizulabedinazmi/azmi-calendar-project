@@ -1,3 +1,4 @@
+import { list, put } from '@vercel/blob';
 import { type NextRequest, NextResponse } from "next/server";
 
 async function ensureCalendarFolderStructure(misskeyUrl: string, misskeyToken: string, userId: string): Promise<string> {
@@ -87,71 +88,45 @@ async function ensureCalendarFolderStructure(misskeyUrl: string, misskeyToken: s
 
 export async function POST(request: NextRequest) {
   try {
-    const MISSKEY_URL = process.env.MISSKEY_URL;
-    const MISSKEY_TOKEN = process.env.MISSKEY_TOKEN;
-    if (!MISSKEY_URL || !MISSKEY_TOKEN) {
-      throw new Error("MISSKEY_URL or MISSKEY_TOKEN is not set");
+    console.log("Backup API: Received POST request");
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error("BLOB_READ_WRITE_TOKEN is not configured");
     }
+
     const body = await request.json();
     const { id, data } = body;
+
     if (!id || !data) {
-      return NextResponse.json({ error: "Missing required fields: 'id' and 'data' are required" }, { status: 400 });
+      console.error("Backup API: Missing required fields", { id: !!id, data: !!data });
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
-    const dataString = typeof data === "string" ? data : JSON.stringify(data);
-    const blob = new Blob([dataString], { type: "application/json" });
-    const fileName = "data.json";
-    const folderId = await ensureCalendarFolderStructure(MISSKEY_URL, MISSKEY_TOKEN, id);
-    const listResponse = await fetch(`${MISSKEY_URL}/api/drive/files`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        i: MISSKEY_TOKEN,
-        folderId: folderId,
-        name: fileName,
-        limit: 100,
-      }),
+
+    console.log(`Processing backup for user ${id}...`);
+
+    // Convert data to string if it's not already
+    const dataString = typeof data === 'string' ? data : JSON.stringify(data);
+
+    // Store in Vercel Blob
+    const blob = await put(`backups/${id}.json`, dataString, {
+      access: 'public',
+      addRandomSuffix: false,
     });
-    if (!listResponse.ok) {
-      throw new Error(`Failed to list files: ${listResponse.statusText}`);
-    }
-    const files = await listResponse.json();
-    for (const file of files) {
-      await fetch(`${MISSKEY_URL}/api/drive/files/delete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          i: MISSKEY_TOKEN,
-          fileId: file.id,
-        }),
-      });
-    }
-    const formData = new FormData();
-    formData.append('i', MISSKEY_TOKEN);
-    formData.append('file', blob, fileName);
-    formData.append('folderId', folderId);
-    const uploadResponse = await fetch(`${MISSKEY_URL}/api/drive/files/create`, {
-      method: 'POST',
-      body: formData,
-    });
-    if (!uploadResponse.ok) {
-      throw new Error(`Failed to upload file: ${uploadResponse.statusText}`);
-    }
-    const uploadedFile = await uploadResponse.json();
-    return NextResponse.json({
-      success: true,
-      url: uploadedFile.url,
+
+    console.log("Backup stored successfully in Vercel Blob");
+
+    return NextResponse.json({ 
+      success: true, 
       id: id,
+      url: blob.url,
       message: "Backup created successfully"
     });
   } catch (error) {
     console.error("Backup API error:", error);
     return NextResponse.json(
       {
-        error: error.message,
+        error: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );
@@ -160,49 +135,54 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const MISSKEY_URL = process.env.MISSKEY_URL;
-    const MISSKEY_TOKEN = process.env.MISSKEY_TOKEN;
-    if (!MISSKEY_URL || !MISSKEY_TOKEN) {
-      throw new Error("MISSKEY_URL or MISSKEY_TOKEN is not set");
+    console.log("Restore API: Received GET request");
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error("BLOB_READ_WRITE_TOKEN is not configured");
     }
+
     const id = request.nextUrl.searchParams.get("id");
+
     if (!id) {
+      console.error("Restore API: Missing backup ID");
       return NextResponse.json({ error: "Missing backup ID" }, { status: 400 });
     }
-    const fileName = "data.json";
-    const folderId = await ensureCalendarFolderStructure(MISSKEY_URL, MISSKEY_TOKEN, id);
-    const listResponse = await fetch(`${MISSKEY_URL}/api/drive/files`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        i: MISSKEY_TOKEN,
-        folderId: folderId,
-        name: fileName,
-        limit: 100,
-      }),
+
+    console.log(`Processing restore request for user ${id}...`);
+
+    // List blobs with the specific prefix
+    const { blobs } = await list({
+      prefix: `backups/${id}`,
     });
-    if (!listResponse.ok) {
-      throw new Error(`Failed to list files: ${listResponse.statusText}`);
-    }
-    const files = await listResponse.json();
-    if (files.length === 0) {
+
+    if (blobs.length === 0) {
+      console.log("No backup found");
       return NextResponse.json({ error: "Backup not found" }, { status: 404 });
     }
-    const latestFile = files.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
-    const fileUrl = latestFile.url;
-    const contentResponse = await fetch(fileUrl);
-    if (!contentResponse.ok) {
-      throw new Error(`Failed to fetch file content: ${contentResponse.statusText}`);
+
+    // Get the most recent backup
+    const latestBackup = blobs[0];
+    
+    // Fetch the backup data
+    const response = await fetch(latestBackup.url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch backup data: ${response.statusText}`);
     }
-    const data = await contentResponse.text();
-    return NextResponse.json({ success: true, data });
+    
+    const data = await response.json();
+
+    console.log("Backup restored successfully");
+
+    return NextResponse.json({ 
+      success: true, 
+      data: data 
+    });
   } catch (error) {
     console.error("Restore API error:", error);
     return NextResponse.json(
       {
-        error: error.message,
+        error: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );
