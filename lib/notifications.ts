@@ -47,7 +47,7 @@ const showToast = (event: any) => {
   });
 };
 
-
+// Checks for pending notifications every 30 seconds
 export const startNotificationChecking = () => {
   if (!notificationInterval) {
     notificationInterval = setInterval(() => {
